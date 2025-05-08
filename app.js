@@ -1,3 +1,188 @@
+// const express = require('express');
+// const multer = require('multer');
+// const path = require('path');
+// const cors = require('cors');
+// const mysql = require('mysql2/promise');
+// const fs = require('fs');
+// require('dotenv').config();
+
+// const app = express();
+// const port = 3000;
+
+// // Create uploads directory if not exists
+// if (!fs.existsSync('uploads')) {
+//     fs.mkdirSync('uploads');
+// }
+
+// // MySQL connection pool
+// const pool = mysql.createPool({
+//     // host: 'localhost',
+//     // user: 'villier',
+//     // password: 'Vill@4171#',
+//     // database: 'products',
+//     // waitForConnections: true,
+//     // connectionLimit: 10,
+//     // queueLimit: 0
+
+//     host: process.env.DB_HOST,
+//     port: process.env.DB_PORT,
+//     user: process.env.DB_USER,
+//     password: process.env.DB_PASSWORD,
+//     database: process.env.DB_NAME
+// });
+
+// // Initialize tables
+// (async () => {
+//     try {
+//         const connection = await pool.getConnection();
+//         const schema = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
+//         const queries = schema.split(';').map(q => q.trim()).filter(q => q.length > 0);
+
+//         for (let query of queries) {
+//             await connection.query(query);
+//         }
+//         console.log('Database initialized');
+//         connection.release();
+//     } catch (error) {
+//         console.error('Database initialization error:', error);
+//     }
+// })();
+
+// // Configure storage for uploaded images
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, 'uploads/');
+//     },
+//     filename: (req, file, cb) => {
+//         cb(null, Date.now() + path.extname(file.originalname));
+//     }
+// });
+
+// const upload = multer({
+//     storage: storage,
+//     limits: { fileSize: 12 * 1024 * 1024 }
+// });
+
+// // CORS configuration
+// app.use(cors({
+//     origin: 'http://localhost:3000',
+//     methods: ['GET', 'POST']
+// }));
+
+// app.use(express.json());
+// app.use(express.static('/'));
+// app.use('/uploads', express.static('uploads'));
+
+// // Upload endpoint
+// app.post('/api/upload/:category', upload.single('product_image'), async (req, res) => {
+//     try {
+//         const { category } = req.params;
+//         const {
+//             product_name,
+//             price,
+//             quantity,
+//             voltage,
+//             current,
+//             supply,
+//             sensor
+//         } = req.body;
+
+//         if (!product_name || !price || !quantity) {
+//             return res.status(400).json({ error: 'Missing required fields' });
+//         }
+
+//         const validCategories = [
+//             'controller', 'plc', 'sensor', 'actuator', 'motors', 'enclosure',
+//             'relay', 'switch', 'cables', 'drives', 'microcontroller', 'protection', 'display'
+//         ];
+//         if (!validCategories.includes(category)) {
+//             return res.status(400).json({
+//                 error: `Invalid category: ${category}`,
+//                 validCategories
+//             });
+//         }
+
+//         const [result] = await pool.query(
+//             `INSERT INTO products 
+//             (product_name, price, quantity, voltage, current, supply, sensor, product_image, category)
+//             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+//             [
+//                 product_name,
+//                 parseFloat(price),
+//                 parseInt(quantity),
+//                 voltage || null,
+//                 current || null,
+//                 supply || null,
+//                 sensor || null,
+//                 req.file ? `/uploads/${req.file.filename}` : null,
+//                 category
+//             ]
+//         );
+
+//         res.status(201).json({
+//             message: 'Product uploaded successfully',
+//             productId: result.insertId
+//         });
+
+//     } catch (error) {
+//         console.error('Server error:', error);
+//         res.status(500).json({
+//             error: 'Internal server error',
+//             message: error.message
+//         });
+//     }
+// });
+
+// // Get products by category
+// app.get('/api/upload/:category', async (req, res) => {
+//     try {
+//         const { category } = req.params;
+
+//         const [products] = await pool.query(`
+//             SELECT 
+//                 id,
+//                 product_name AS name,
+//                 price,
+//                 quantity,
+//                 voltage,
+//                 current,
+//                 supply,
+//                 sensor,
+//                 product_image AS productImage,
+//                 category
+//             FROM products 
+//             WHERE category = ? 
+//             ORDER BY created_at DESC
+//         `, [category]);
+
+//         if (products.length === 0) {
+//             return res.status(404).json({ error: 'No products found in this category' });
+//         }
+
+//         res.json(products);
+
+//     } catch (error) {
+//         console.error('Server error:', error);
+//         res.status(500).json({
+//             error: 'Internal server error',
+//             message: error.message
+//         });
+//     }
+// });
+
+// // Error handling middleware
+// app.use((err, req, res, next) => {
+//     console.error(err.stack);
+//     res.status(500).json({
+//         error: 'Something went wrong!',
+//         message: err.message
+//     });
+// });
+
+// app.listen(port, () => {
+//     console.log(`Server running at http://localhost:${port}`);
+// });
+
 const express = require('express');
 const multer = require('multer');
 const path = require('path');
@@ -7,42 +192,42 @@ const fs = require('fs');
 require('dotenv').config();
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 // Create uploads directory if not exists
 if (!fs.existsSync('uploads')) {
     fs.mkdirSync('uploads');
 }
 
-// MySQL connection pool
+// MySQL connection pool using Railway-provided ENV variables
 const pool = mysql.createPool({
-    host: 'localhost',
-    user: 'villier',
-    password: 'Vill@4171#',
-    database: 'products',
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT || 3306,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME,
     waitForConnections: true,
     connectionLimit: 10,
     queueLimit: 0
 });
 
-// Initialize tables
+// Initialize tables from database.sql
 (async () => {
     try {
         const connection = await pool.getConnection();
         const schema = fs.readFileSync(path.join(__dirname, 'database.sql'), 'utf8');
         const queries = schema.split(';').map(q => q.trim()).filter(q => q.length > 0);
-
         for (let query of queries) {
             await connection.query(query);
         }
-        console.log('Database initialized');
+        console.log('✅ Database initialized');
         connection.release();
     } catch (error) {
-        console.error('Database initialization error:', error);
+        console.error('❌ Database initialization error:', error);
     }
 })();
 
-// Configure storage for uploaded images
+// Multer config for file uploads
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'uploads/');
@@ -54,18 +239,33 @@ const storage = multer.diskStorage({
 
 const upload = multer({
     storage: storage,
-    limits: { fileSize: 12 * 1024 * 1024 }
+    limits: { fileSize: 12 * 1024 * 1024 } // 12MB
 });
 
-// CORS configuration
+// Dynamic CORS config (add your frontend Railway domain here)
+const allowedOrigins = [
+    'http://localhost:3000',
+    'vitronics-e-store-production.up.railway.app' // <-- replace with your frontend URL
+];
+
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
     methods: ['GET', 'POST']
 }));
 
 app.use(express.json());
-app.use(express.static('public'));
 app.use('/uploads', express.static('uploads'));
+
+// Root route
+app.get('/', (req, res) => {
+    res.send('🚀 API is running on Railway!');
+});
 
 // Upload endpoint
 app.post('/api/upload/:category', upload.single('product_image'), async (req, res) => {
@@ -89,6 +289,7 @@ app.post('/api/upload/:category', upload.single('product_image'), async (req, re
             'controller', 'plc', 'sensor', 'actuator', 'motors', 'enclosure',
             'relay', 'switch', 'cables', 'drives', 'microcontroller', 'protection', 'display'
         ];
+
         if (!validCategories.includes(category)) {
             return res.status(400).json({
                 error: `Invalid category: ${category}`,
@@ -114,12 +315,12 @@ app.post('/api/upload/:category', upload.single('product_image'), async (req, re
         );
 
         res.status(201).json({
-            message: 'Product uploaded successfully',
+            message: '✅ Product uploaded successfully',
             productId: result.insertId
         });
 
     } catch (error) {
-        console.error('Server error:', error);
+        console.error('❌ Server error:', error);
         res.status(500).json({
             error: 'Internal server error',
             message: error.message
@@ -156,7 +357,7 @@ app.get('/api/upload/:category', async (req, res) => {
         res.json(products);
 
     } catch (error) {
-        console.error('Server error:', error);
+        console.error('❌ Server error:', error);
         res.status(500).json({
             error: 'Internal server error',
             message: error.message
@@ -164,7 +365,7 @@ app.get('/api/upload/:category', async (req, res) => {
     }
 });
 
-// Error handling middleware
+// Generic error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
@@ -173,6 +374,7 @@ app.use((err, req, res, next) => {
     });
 });
 
+// Start server
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
+    console.log(`🌐 Server running at http://localhost:${port}`);
 });
