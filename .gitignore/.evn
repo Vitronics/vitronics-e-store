@@ -1,9 +1,0 @@
-    // HOST='localhost'
-    // USER= 'root'    
-    // PASSWORD='Vill@4171#'
-// DB_NAME='products'host: process.env.DB_HOST,
-DB_PORT='3306'
-DB_USER='root'
-DB_PASSWORD='EMbJsOLDqrTEfMxwTAZkkspIJeDxuECy'
-DB_NAME='railway'
-DB_HOST='mysql.railway.internal'

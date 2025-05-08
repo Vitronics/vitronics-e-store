@@ -1,7 +1,7 @@
 {
   "name": "week-5-hands-on-allan",
   "version": "1.0.0",
-  "description": "The aim of this project is to introduce you to the connection of MySQL database to NodeJs",
+  "description": "Host ecommerce on netfly",
   "main": "login.js",
   "scripts": {
     "start": "node app.js"
