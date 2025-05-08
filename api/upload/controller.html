@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Process Controllers</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: #f4f4f4;
+      padding: 2rem;
+    }
+    h1 {
+      color: #2d3748;
+      text-align: center;
+    }
+    #productsContainer {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+    .product-card {
+      background: white;
+      padding: 1rem;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .product-image {
+      width: 100%;
+      max-height: 200px;
+      object-fit: contain;
+      border-radius: 6px;
+    }
+    .product-details {
+      margin-top: 0.8rem;
+    }
+    .price-tag {
+      color: #2f855a;
+      font-weight: bold;
+      font-size: 1.1rem;
+    }
+    .back-btn {
+      display: inline-block;
+      margin: 1rem 0;
+      padding: 0.5rem 1rem;
+      background: #4299e1;
+      color: white;
+      border-radius: 5px;
+      text-decoration: none;
+    }
+    .back-btn:hover {
+      background: #3182ce;
+    }
+  </style>
+</head>
+<body>
+  <a class="back-btn" href="upload.html">← Upload New Product</a>
+  <h1>Process Controllers</h1>
+  <div id="productsContainer"></div>
+
+  <script>
+    async function loadProducts() {
+      try {
+        const response = await fetch('/api/upload/controller');
+        const products = await response.json();
+        const container = document.getElementById('productsContainer');
+        container.innerHTML = '';
+
+        products.forEach(product => {
+          const productCard = `
+            <div class="product-card">
+              <img src="${product.imageUrl}" class="product-image" alt="${product.name}" />
+              <div class="product-details">
+                <h3>${product.name}</h3>
+                <p class="price-tag">KSH ${product.price}</p>
+                <p>In Stock: ${product.quantity}</p>
+                <p>Voltage: ${product.voltage || 'N/A'}</p>
+                <p>Supply: ${product.supply || 'N/A'}</p>
+                <p>Sensor: ${product.sensor || 'N/A'}</p>
+                <p>Current: ${product.current || 'N/A'}</p>
+              </div>
+            </div>
+          `;
+          container.insertAdjacentHTML('beforeend', productCard);
+        });
+
+      } catch (error) {
+        console.error('Error loading products:', error);
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', loadProducts);
+  </script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Product</title>
+    <link rel="stylesheet" href="css/upload.css">
+    <style>
+        
+    </style>
+</head>
+<body>
+    <div class="upload-container">
+        <h1>Upload Product Interface</h1>
+        <form id="uploadForm" enctype="multipart/form-data" method="POST">
+            <div class="form-group">
+                <label for="product_name">Product Name</label>
+                <input type="text" id="product_name" name="product_name" 
+                       placeholder="Enter product name" required
+                       pattern=".{5,100}" title="5-100 characters">
+            </div>
+
+            <div class="form-group">
+                <label for="price">Unit Price (KSH)</label>
+                <input type="number" id="price" name="price" 
+                       step="0.01" min="0" 
+                       placeholder="0.00" required>
+            </div>
+
+            <div class="form-group">
+                <label for="quantity">Stock Quantity</label>
+                <input type="number" id="quantity" name="quantity" 
+                       min="0" max="10000" placeholder="0" required>
+            </div>
+
+            <div class="form-group">
+                <label for="category">Equipment Category</label>
+                <select id="category" name="category" required>
+                    <option value="">Choose Category</option>
+                    <option value="controller">Process Automation Controllers</option>
+                    <option value="plc">PLCs </option>
+                    <option value="sensor">Sensors, Encoder & Transducers</option>
+                    <option value="actuator">Actuators & Valves</option>
+                    <option value="motors">Motors</option>
+                    <option value="enclosure">Enclosures & Starters</option>
+                    <option value="relay">Relays & Timers</option>
+                    <option value="switch">Pushbutton & Swithes</option>
+                    <option value="cables">Electrical Cables</option>
+                    <option value="drives">Drives and Soft Starters</option>
+                    <option value="display">HMI & Displays</option>
+                    <option value="microcontroller">Arduino & Microcontrollers</option>
+                    <option value="protection">Circuit protections</option>
+                    <!-- <option value="microcontrollers">Microcontrollers</option>
+                    
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="supply">Supply Voltage</label>
+                <select id="supply" name="supply" required>
+                    <option value="">Select input voltage</option>
+                    <option value="24v">24V DC</option>
+                    <option value="240v">240V AC</option>
+                    <option value="415v">415V AC</option>
+                    <option value="na">Not Applicable</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="voltage">Operating Voltage</label>
+                <select id="voltage" name="voltage" required>
+                    <option value="">Select Output/Operating Voltage</option>
+                    <option value="24v">24V DC</option>
+                    <option value="240v">240V AC</option>
+                    <option value="415v">415V AC</option>
+                    <option value="na">Not Applicable</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="current">Signal Current</label>
+                <select id="current" name="current" required>
+                    <option value="">Select Current Range</option>
+                    <option value="0-10mA">0-10mA</option>
+                    <option value="4-20mA">4-20mA</option>
+                    <option value="na">Not Applicable</option>
+                </select>
+            </div>
+            
+             <div class="form-group">
+                <label for="sensor">Sensor type</label>
+                <select id="sensor" name="sensor" required>
+                    <option value="">Select sensor type</option>
+                    <option value="NPN">0-10mA</option>
+                    <option value="PNP">4-20mA</option>
+                    <option value="na">Not Applicable</option>
+                </select>
+            </div> -->
+
+            <div class="form-group">
+                <label for="product_image">Product Image</label>
+                <input type="file" id="product_image" name="product_image" 
+                       accept="image/png, image/jpeg, image/webp" 
+                       required aria-describedby="imageHelp">
+                <div id="imageHelp" class="help-text">Max size: 12MB (PNG, JPEG, WebP)</div>
+                <img id="imagePreview" class="image-preview" alt="Product preview">
+            </div>
+
+            <button type="submit" id="submitBtn">Upload Product</button>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('uploadForm');
+        const submitBtn = document.getElementById('submitBtn');
+        const imageInput = document.getElementById('product_image');
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            submitBtn.classList.add('loading');
+            
+            try {
+                const imageFile = imageInput.files[0];
+                if (imageFile.size > 20 * 1024 * 1024) {
+                    throw new Error('Image size exceeds 20MB limit');
+                }
+
+                const formData = new FormData(form);
+                const category = document.getElementById('category').value;
+                const endpoint = `/api/upload/${category}`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(result.message || 'Upload failed');
+                }
+
+                showNotification('Product uploaded successfully!', 'success');
+                form.reset();
+                document.getElementById('imagePreview').style.display = 'none';
+            } catch (error) {
+                console.error('Upload Error:', error);
+                showNotification(error.message || 'Upload failed. Please try again.', 'error');
+            } finally {
+                submitBtn.classList.remove('loading');
+            }
+        });
+
+        imageInput.addEventListener('change', function(e) {
+            const file = this.files[0];
+            if (!file) return;
+
+            if (!file.type.match('image.*')) {
+                showNotification('Please select a valid image file', 'error');
+                this.value = '';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const preview = document.getElementById('imagePreview');
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+        });
+
+        function showNotification(message, type = 'info') {
+            const existingAlert = document.querySelector('.alert');
+            if (existingAlert) existingAlert.remove();
+
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            alert.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem;
+                border-radius: 6px;
+                color: white;
+                background-color: ${type === 'error' ? '#e53e3e' : '#38a169'};
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                z-index: 1000;
+            `;
+            
+            document.body.appendChild(alert);
+            setTimeout(() => alert.remove(), 5000);
+        }
+
+       
+   
+</script>
+
+   
+</body>
+</html>
