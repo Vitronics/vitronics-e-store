@@ -10,7 +10,12 @@ const compression = require('compression');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-const port = process.env.PORT || 3000;
+// const port = process.env.PORT;
+const PORT = process.env.PORT || 8080;
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`🌐 Server running on port ${PORT}`);
+  console.log(`➡️ Try accessing at: http://localhost:${PORT}`);
+});
 
 // Security and Performance Middleware
 app.use(helmet());
