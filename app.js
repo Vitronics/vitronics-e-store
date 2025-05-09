@@ -32,7 +32,7 @@ app.use(limiter);
 // Configure CORS for production
 const corsOptions = {
   origin: process.env.NODE_ENV === 'production' 
-    ? ['https://vitronics-e-store-production.up.railway.app']
+    ? ['vitronics-e-store-production.up.railway.app']
     : '*',
   methods: ['GET', 'POST'],
   credentials: true
