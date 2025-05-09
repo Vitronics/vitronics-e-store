@@ -1,8 +1,8 @@
 {
-  "name": "week-5-hands-on-allan",
+  "name": "vitronics-e-store",
   "version": "1.0.0",
-  "description": "Host ecommerce on netfly",
-  "main": "login.js",
+  "description": "Host ecommerce on railway",
+  "main": "controller.js",
   "scripts": {
     "start": "node app.js"
   },
