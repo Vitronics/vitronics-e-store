@@ -12,10 +12,10 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 // const port = process.env.PORT;
 const PORT = process.env.PORT;
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🌐 Server running on port ${PORT}`);
-  console.log(`➡️ Try accessing at: http://localhost:${PORT}`);
-});
+// app.listen(PORT, '0.0.0.0', () => {
+//   console.log(`🌐 Server running on port ${PORT}`);
+//   console.log(`➡️ Try accessing at: http://localhost:${PORT}`);
+//});
 
 // Security and Performance Middleware
 app.use(helmet());
@@ -126,7 +126,7 @@ app.use('/uploads', express.static(uploadsDir, {
 }));
 
 // Health check endpoint
-app.get('/health', (req, res) => {
+app.get('/', (req, res) => {
   res.status(200).json({ status: 'healthy' });
 });
 
@@ -261,10 +261,10 @@ async function startServer() {
   await ensureUploadsDir();
   await initializeDatabase();
   
-//   app.listen(PORT, () => {
-//     console.log(`🌐 Server running on port ${PORT}`);
-//     console.log(`🚀 Environment: ${process.env.NODE_ENV || 'development'}`);
-//   });
+  const PORT = process.env.PORT || 8080;
+  app.listen(PORT, '0.0.0.0', () => { 
+    console.log(`🌐 Server running on port ${PORT}`);
+  });
 }
 
 startServer().catch(err => {
