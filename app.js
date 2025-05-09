@@ -11,7 +11,7 @@ const rateLimit = require('express-rate-limit');
 
 const app = express();
 // const port = process.env.PORT;
-const PORT = process.env.PORT || 3306;
+const PORT = process.env.PORT;
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🌐 Server running on port ${PORT}`);
   console.log(`➡️ Try accessing at: http://localhost:${PORT}`);
@@ -261,10 +261,10 @@ async function startServer() {
   await ensureUploadsDir();
   await initializeDatabase();
   
-  app.listen(PORT, () => {
-    console.log(`🌐 Server running on port ${PORT}`);
-    console.log(`🚀 Environment: ${process.env.NODE_ENV || 'development'}`);
-  });
+//   app.listen(PORT, () => {
+//     console.log(`🌐 Server running on port ${PORT}`);
+//     console.log(`🚀 Environment: ${process.env.NODE_ENV || 'development'}`);
+//   });
 }
 
 startServer().catch(err => {
