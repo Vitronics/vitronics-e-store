@@ -126,10 +126,11 @@ app.use('/uploads', express.static(uploadsDir, {
 }));
 
 // Health check endpoint
-app.get('/', (req, res) => {
-  res.status(200).json({ status: 'healthy' });
-});
+pp.use(express.static(path.join(__dirname, 'public'))); // assuming index.html is in /public
 
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 // Product routes
 const productRouter = express.Router();
 
