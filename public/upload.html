@@ -128,7 +128,8 @@
 
                 const formData = new FormData(form);
                 const category = document.getElementById('category').value;
-                const endpoint = `vitronics-e-store-production.up.railway.app/api/upload/${category}`;
+                const endpoint = `https://vitronics-e-store-production.up.railway.app/api/upload/${category}`;
+
 
 
                 const response = await fetch(endpoint, {
