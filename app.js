@@ -126,11 +126,13 @@ app.use('/uploads', express.static(uploadsDir, {
 }));
 
 // Health check endpoint
-pp.use(express.static(path.join(__dirname, 'public'))); // assuming index.html is in /public
+// Serve index.html at root
+app.use(express.static(path.join(__dirname, 'public'))); // assuming index.html is in /public
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
+
 // Product routes
 const productRouter = express.Router();
 
