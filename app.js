@@ -43,7 +43,7 @@ app.use(cors(corsOptions));
 const pool = mysql.createPool({
   
         host: process.env.MYSQLHOST || process.env.DB_HOST || 'mysql.railway.internal',
-        port: process.env.MYSQLPORT || process.env.DB_PORT || 8080,
+        port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
         user: process.env.MYSQLUSER || process.env.DB_USER || 'root',
         password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || 'EMbJsOLDqrTEfMxwTAZkkspIJeDxuECy',
         database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'railway',
