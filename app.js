@@ -36,15 +36,24 @@ app.use(cors(corsOptions));
 
 // Database connection pool with Railway ENV variables
 const pool = mysql.createPool({
-  host: process.env.MYSQLHOST || process.env.DB_HOST,
-  port: process.env.MYSQLPORT || process.env.DB_PORT,
-  user: process.env.MYSQLUSER || process.env.DB_USER,
-  password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD,
-  database: process.env.MYSQLDATABASE || process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
-});
+  
+        host: process.env.MYSQLHOST || process.env.DB_HOST || 'mysql',
+        port: process.env.MYSQLPORT || process.env.DB_PORT || 3306,
+        user: process.env.MYSQLUSER || process.env.DB_USER || 'root',
+        password: process.env.MYSQLPASSWORD || process.env.DB_PASSWORD || '',
+        database: process.env.MYSQLDATABASE || process.env.DB_NAME || 'myapp',
+        waitForConnections: true,
+        connectionLimit: 10,
+        queueLimit: 0
+      });
+
+
+    //   DB_PORT=3306
+    //   DB_USER=root
+    //   DB_PASSWORD=EMbJsOLDqrTEfMxwTAZkkspIJeDxuECy
+    //   DB_NAME=railway
+    //   DB_HOST=mysql.railway.internal
+
 
 // Initialize database schema
 async function initializeDatabase() {
