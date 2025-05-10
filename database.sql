@@ -37,15 +37,24 @@ CREATE TABLE IF NOT EXISTS order_items (
 );
 
 
-CREATE TABLE IF NOT EXISTS cart_items (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  user_id VARCHAR(255) NOT NULL,
-  product_id INT NOT NULL,
-  quantity INT NOT NULL DEFAULT 1,
-  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  FOREIGN KEY (product_id) REFERENCES products(id),
-  INDEX (user_id)
+-- CREATE TABLE IF NOT EXISTS cart_items (
+--   id INT AUTO_INCREMENT PRIMARY KEY,
+--   -- user_id VARCHAR(255) NOT NULL,
+--   product_id INT NOT NULL,
+--   quantity INT NOT NULL DEFAULT 1,
+--   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+--   updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+--   FOREIGN KEY (product_id) REFERENCES products(id),
+--   INDEX (user_id)
+-- );
+DROP TABLE cart-items;
+
+    CREATE TABLE IF NOT EXISTS cart(
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL DEFAULT 1,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
 -- Orders table

@@ -196,14 +196,14 @@ if (!fs.existsSync('uploads')) {
 
 // MySQL connection pool
 const pool = mysql.createPool({
-  host: process.env.MYSQLHOST || 'localhost',
-  port: process.env.MYSQLPORT || 3306,
-  user: process.env.MYSQLUSER,
-  password: process.env.MYSQLPASSWORD,
-  database: process.env.MYSQLDATABASE,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+    host: process.env.MYSQLHOST || 'localhost',
+    port: process.env.MYSQLPORT || 3306,
+    user: process.env.MYSQLUSER,
+    password: process.env.MYSQLPASSWORD,
+    database: process.env.MYSQLDATABASE,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0
 });
 
 // Initialize tables
@@ -241,14 +241,12 @@ const upload = multer({
 // CORS configuration
 app.use(cors({
     origin: process.env.CLIENT_ORIGIN || 'https://vitronics-e-store-production.up.railway.app/',
-    methods: ['GET', 'POST', 'PUT', 'DELETE']
+    methods: ['GET', 'POST', 'DELETE']
 }));
 
 app.use(express.json());
 app.use(express.static('public'));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// PRODUCT ENDPOINTS
 
 // Upload endpoint
 app.post('/api/upload/:category', upload.single('product_image'), async (req, res) => {
@@ -347,95 +345,72 @@ app.get('/api/upload/:category', async (req, res) => {
     }
 });
 
-// Get single product by ID
-app.get('/api/product/:id', async (req, res) => {
-    try {
-        const { id } = req.params;
+// ===== CART ENDPOINTS =====
 
-        const [products] = await pool.query(`
+// Add to cart (no user ID)
+app.post('/api/cart/add', async (req, res) => {
+    const { product_id, quantity } = req.body;
+
+    if (!product_id || !quantity) {
+        return res.status(400).json({ error: 'Missing product_id or quantity' });
+    }
+
+    try {
+        const [product] = await pool.query('SELECT id FROM products WHERE id = ?', [product_id]);
+        if (product.length === 0) {
+            return res.status(404).json({ error: 'Product not found' });
+        }
+
+        const [existing] = await pool.query('SELECT id FROM cart WHERE product_id = ?', [product_id]);
+        if (existing.length > 0) {
+            await pool.query('UPDATE cart SET quantity = quantity + ? WHERE product_id = ?', [quantity, product_id]);
+        } else {
+            await pool.query('INSERT INTO cart (product_id, quantity) VALUES (?, ?)', [product_id, quantity]);
+        }
+
+        res.status(200).json({ message: 'Product added to cart' });
+    } catch (error) {
+        console.error('Add to cart error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// Get all items in cart
+app.get('/api/cart', async (req, res) => {
+    try {
+        const [items] = await pool.query(`
             SELECT 
-                id,
-                product_name AS name,
-                price,
-                quantity,
-                voltage,
-                current,
-                supply,
-                sensor,
-                product_image AS productImage,
-                category
-            FROM products 
-            WHERE id = ?
-        `, [id]);
+                c.id AS cart_id,
+                c.quantity,
+                p.id AS product_id,
+                p.product_name,
+                p.price,
+                p.product_image
+            FROM cart c
+            JOIN products p ON c.product_id = p.id
+        `);
 
-        if (products.length === 0) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-
-        res.json(products[0]);
-
+        res.json(items);
     } catch (error) {
-        console.error('Server error:', error);
-        res.status(500).json({
-            error: 'Internal server error',
-            message: error.message
-        });
+        console.error('Get cart error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// CART ENDPOINTS
+// Remove item from cart
+app.delete('/api/cart/:product_id', async (req, res) => {
+    const { product_id } = req.params;
 
-// Add item to cart
-app.post('/api/cart', async (req, res) => {
     try {
-        const { productId, quantity = 1 } = req.body;
-
-        if (!productId) {
-            return res.status(400).json({ error: 'Product ID is required' });
-        }
-
-        // Verify product exists and has sufficient quantity
-        const [products] = await pool.query(
-            'SELECT id, price, quantity FROM products WHERE id = ?',
-            [productId]
-        );
-
-        if (products.length === 0) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
-
-        const product = products[0];
-        
-        if (product.quantity < quantity) {
-            return res.status(400).json({
-                error: 'Insufficient stock',
-                available: product.quantity
-            });
-        }
-
-        // In a real application, you would associate this with a user session
-        // For simplicity, we'll just return the cart item
-        res.json({
-            message: 'Product added to cart',
-            cartItem: {
-                productId: product.id,
-                name: product.name,
-                price: product.price,
-                quantity,
-                image: product.productImage
-            }
-        });
-
+        await pool.query('DELETE FROM cart WHERE product_id = ?', [product_id]);
+        res.json({ message: 'Item removed from cart' });
     } catch (error) {
-        console.error('Server error:', error);
-        res.status(500).json({
-            error: 'Internal server error',
-            message: error.message
-        });
+        console.error('Delete cart item error:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// Error handling middleware
+// Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({
