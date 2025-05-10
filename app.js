@@ -349,40 +349,29 @@ app.get('/api/upload/:category', async (req, res) => {
 
 // Add to cart (no user ID)
 app.post('/api/cart/add', async (req, res) => {
-    const { product_id } = req.body;
+    const { product_id, name, price } = req.body;
 
-    // if (!product_id) {
-    //     return res.status(400).json({ error: 'Missing product_id' });
-    // }
+    if (!product_id || !name || !price) {
+        return res.status(400).json({ error: 'Missing product_id, name, or price' });
+    }
 
     try {
-        // Confirm product exists
-        const [product] = await pool.query(
-            'SELECT id FROM products WHERE id = ?',
-            [product_id]
-        );
+        // Check if the product exists in the database
+        const [product] = await pool.query('SELECT id, product_name FROM products WHERE id = ?', [product_id]);
+        
         if (product.length === 0) {
             return res.status(404).json({ error: 'Product not found' });
         }
 
-        // Check if product is already in cart
-        const [existing] = await pool.query(
-            'SELECT id FROM cart WHERE product_id = ?',
-            [product_id]
-        );
-
+        // Add the product to the cart
+        const [existing] = await pool.query('SELECT id FROM cart WHERE product_id = ?', [product_id]);
+        
         if (existing.length > 0) {
-            // Increment by 1
-            await pool.query(
-                'UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?',
-                [product_id]
-            );
+            // Product already exists in cart, update the quantity
+            await pool.query('UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?', [product_id]);
         } else {
-            // Insert new with quantity = 1
-            await pool.query(
-                'INSERT INTO cart (product_id, quantity) VALUES (?, 1)',
-                [product_id]
-            );
+            // Add new product to cart with quantity 1
+            await pool.query('INSERT INTO cart (product_id, name, price, quantity) VALUES (?, ?, ?, ?)', [product_id, name, price, 1]);
         }
 
         res.status(200).json({ message: 'Product added to cart' });
@@ -391,6 +380,7 @@ app.post('/api/cart/add', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 
 
 // Get all items in cart
