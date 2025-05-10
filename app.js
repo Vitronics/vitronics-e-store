@@ -314,10 +314,7 @@ app.post('/api/upload/:category', upload.single('product_image'), async (req, re
 app.get('/api/upload/:category', async (req, res) => {
     try {
         const { category } = req.params;
-        const { page = 1, limit = 10 } = req.query;
-        const offset = (page - 1) * limit;
 
-        // Get products with pagination
         const [products] = await pool.query(`
             SELECT 
                 id,
@@ -333,28 +330,13 @@ app.get('/api/upload/:category', async (req, res) => {
             FROM products 
             WHERE category = ? 
             ORDER BY created_at DESC
-            LIMIT ? OFFSET ?
-        `, [category, parseInt(limit), parseInt(offset)]);
-
-        // Get total count for pagination
-        const [[{ total }]] = await pool.query(
-            'SELECT COUNT(*) AS total FROM products WHERE category = ?',
-            [category]
-        );
+        `, [category]);
 
         if (products.length === 0) {
             return res.status(404).json({ error: 'No products found in this category' });
         }
 
-        res.json({
-            products,
-            pagination: {
-                total,
-                page: parseInt(page),
-                limit: parseInt(limit),
-                totalPages: Math.ceil(total / limit)
-            }
-        });
+        res.json(products);
 
     } catch (error) {
         console.error('Server error:', error);
