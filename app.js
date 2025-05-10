@@ -351,9 +351,9 @@ app.get('/api/upload/:category', async (req, res) => {
 app.post('/api/cart/add', async (req, res) => {
     const { product_id } = req.body;
 
-    if (!product_id) {
-        return res.status(400).json({ error: 'Missing product_id' });
-    }
+    // if (!product_id) {
+    //     return res.status(400).json({ error: 'Missing product_id' });
+    // }
 
     try {
         // Confirm product exists
