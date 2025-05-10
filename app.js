@@ -364,7 +364,7 @@ app.post('/api/cart/add', async (req, res) => {
     if (existing.length > 0) {
       // Update quantity if product already exists
       await pool.query(
-        'UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?',
+        'UPDATE cart_items SET quantity = quantity + 1 WHERE product_id = ?',
         [product_id]
       );
     } else {
