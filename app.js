@@ -349,36 +349,38 @@ app.get('/api/upload/:category', async (req, res) => {
 
 // Add to cart (no user ID)
 app.post('/api/cart/add', async (req, res) => {
-    const { product_id, name, price } = req.body;
+  const { product_id, name, price } = req.body;
 
-    if (!product_id || !name || !price) {
-        return res.status(400).json({ error: 'Missing product_id, name, or price' });
+  if (!product_id || !name || !price) {
+    return res.status(400).json({ error: 'Missing product_id, name, or price' });
+  }
+
+  try {
+    const [existing] = await pool.query(
+      'SELECT id FROM cart WHERE product_id = ?',
+      [product_id]
+    );
+
+    if (existing.length > 0) {
+      // Update quantity if product already exists
+      await pool.query(
+        'UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?',
+        [product_id]
+      );
+    } else {
+      // Insert new cart item
+      await pool.query(
+        'INSERT INTO cart (product_id, product_name, price, quantity) VALUES (?, ?, ?, ?)',
+        [product_id, name, price, 1]
+      );
     }
 
-    try {
-        // Check if the product exists in the database
-        const [product] = await pool.query('SELECT id, product_name FROM products WHERE id = ?', [product_id]);
-        
-        if (product.length === 0) {
-            return res.status(404).json({ error: 'Product not found' });
-        }
+    res.status(200).json({ message: 'Product added to cart' });
 
-        // Add the product to the cart
-        const [existing] = await pool.query('SELECT id FROM cart WHERE product_id = ?', [product_id]);
-        
-        if (existing.length > 0) {
-            // Product already exists in cart, update the quantity
-            await pool.query('UPDATE cart SET quantity = quantity + 1 WHERE product_id = ?', [product_id]);
-        } else {
-            // Add new product to cart with quantity 1
-            await pool.query('INSERT INTO cart (product_id, name, price, quantity) VALUES (?, ?, ?, ?)', [product_id, name, price, 1]);
-        }
-
-        res.status(200).json({ message: 'Product added to cart' });
-    } catch (error) {
-        console.error('Add to cart error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+  } catch (err) {
+    console.error('Error adding to cart:', err);
+    res.status(500).json({ error: 'Server error' });
+  }
 });
 
 
