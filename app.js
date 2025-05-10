@@ -349,10 +349,10 @@ app.get('/api/upload/:category', async (req, res) => {
 
 // Add to cart (no user ID)
 app.post('/api/cart/add', async (req, res) => {
-    const { product_id, quantity } = req.body;
+    const { product_id} = req.body;
 
-    if (!product_id || !quantity) {
-        return res.status(400).json({ error: 'Missing product_id or quantity' });
+    if (!product_id) {
+        return res.status(400).json({ error: 'Missing product_id ' });
     }
 
     try {
