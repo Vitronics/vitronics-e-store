@@ -242,27 +242,29 @@
 
       products.forEach(product => {
         const productCard = `
-          <div class="featured__item" data-name="${product.name}" data-price="${product.price}">
-            <div class="featured__item__pic set-bg" style="background-image: url('${product.productImage}')">
-              <ul class="featured__item__pic__hover">
-                <li><a href="#"><i class="fa fa-heart"></i></a></li>
-                <li>
-                  <a href="#" class="add-to-cart" 
-                     data-name="${product.name}" 
-                     data-price="${product.price}">
-                    <i class="fa fa-shopping-cart"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div class="product-details">
-              <h5>${product.name}</h5>
-              <p class="price-tag">KSH ${product.price}</p>
-              <p class="qty">In Stock: ${product.quantity}</p>
-            
-            </div>
-          </div>
-        `;
+  <div class="featured__item" data-id="${product.id}" data-name="${product.name}" data-price="${product.price}">
+    <div class="featured__item__pic set-bg" style="background-image: url('${product.productImage}')">
+      <ul class="featured__item__pic__hover">
+        <li><a href="#"><i class="fa fa-heart"></i></a></li>
+        <li>
+          <a href="#" 
+             class="add-to-cart" 
+             data-id="${product.id}" 
+             data-name="${product.name}" 
+             data-price="${product.price}" 
+             data-image="${product.productImage}">
+            <i class="fa fa-shopping-cart"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="product-details">
+      <h5>${product.name}</h5>
+      <p class="price-tag">KSH ${product.price}</p>
+      <p class="qty">In Stock: ${product.quantity}</p>
+    </div>
+  </div>
+`;
 
         //   <p>Voltage: ${product.voltage || 'N/A'}</p>
         //       <p>Supply: ${product.supply || 'N/A'}</p>
@@ -283,6 +285,7 @@
       e.preventDefault();
       const name = target.getAttribute('data-name');
       const price = parseFloat(target.getAttribute('data-price'));
+      const productId = target.getAttribute('data-id');
 
       try {
         const res = await fetch('/api/cart/add', {
