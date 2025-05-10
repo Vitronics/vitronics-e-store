@@ -357,7 +357,7 @@ app.post('/api/cart/add', async (req, res) => {
 
   try {
     const [existing] = await pool.query(
-      'SELECT id FROM cart WHERE product_id = ?',
+      'SELECT id FROM cart_items WHERE product_id = ?',
       [product_id]
     );
 
@@ -370,7 +370,7 @@ app.post('/api/cart/add', async (req, res) => {
     } else {
       // Insert new cart item
       await pool.query(
-        'INSERT INTO cart (product_id, product_name, price, quantity) VALUES (?, ?, ?, ?)',
+        'INSERT INTO cart_items (product_id, product_name, price, quantity) VALUES (?, ?, ?, ?)',
         [product_id, name, price, 1]
       );
     }
@@ -412,7 +412,7 @@ app.delete('/api/cart/:product_id', async (req, res) => {
     const { product_id } = req.params;
 
     try {
-        await pool.query('DELETE FROM cart WHERE product_id = ?', [product_id]);
+        await pool.query('DELETE FROM cart_items WHERE product_id = ?', [product_id]);
         res.json({ message: 'Item removed from cart' });
     } catch (error) {
         console.error('Delete cart item error:', error);
