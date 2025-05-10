@@ -9,7 +9,7 @@
     -------------------*/
     $(window).on('load', function () {
         $(".loader").fadeOut();
-        $("#preloder").delay(0).fadeOut("slow");
+        // $("#preloder").delay(0).fadeOut("slow");
 
         /*------------------
             Gallery filter
