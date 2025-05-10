@@ -396,7 +396,7 @@ app.get('/api/cart', async (req, res) => {
                 p.product_name,
                 p.price,
                 p.product_image
-            FROM cart c
+            FROM cart_items c
             JOIN products p ON c.product_id = p.id
         `);
 
