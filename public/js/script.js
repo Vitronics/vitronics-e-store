@@ -52,29 +52,23 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // ─── Clear cart ───────────────────────────────
-  clearCartBtn?.addEventListener('click', async () => {
+ clearCartBtn?.addEventListener('click', async () => {
   if (!confirm('Are you sure you want to clear the cart?')) return;
-  const resAll = await fetch('/api/cart');
-  const items = await resAll.json();
-
-  // Only proceed if items are present
-  if (items.length > 0) {
-    await Promise.all(
-      items.map(async it => {
-        const resDelete = await fetch(`/api/cart/name/${encodeURIComponent(it.product_name)}`, { method: 'DELETE' });
-        const json = await resDelete.json();
-        if (!resDelete.ok) {
-          alert(json.error || 'Could not remove some items');
-        }
-      })
-    );
-
+  
+  try {
+    const response = await fetch('/api/cart', { method: 'DELETE' });
+    
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error || 'Failed to clear cart');
+    }
+    
     alert('Cart has been cleared!');
     await updateCartUI();
     await renderCartTable();
     await renderCheckoutSummary();
-  } else {
-    alert('Cart is already empty.');
+  } catch (error) {
+    alert(error.message);
   }
 });
 

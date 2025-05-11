@@ -425,16 +425,16 @@ app.delete('/api/cart', async (req, res) => {
 
 
 //Delete cart items
-app.delete('/api/cart/:product_id', async (req, res) => {
-    const { product_id } = req.params;
-
-    try {
-        await pool.query('DELETE FROM cart_items WHERE product_id = ?', [product_id]);
-        res.json({ message: 'Item removed from cart' });
-    } catch (error) {
-        console.error('Delete cart item error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+app.delete('/api/cart', async (req, res) => {
+  try {
+    console.log('Attempting to clear cart...'); // Add this
+    const result = await pool.query('DELETE FROM cart_items');
+    console.log('Cart cleared, affected rows:', result.affectedRows); // Add this
+    res.json({ message: 'All items removed from cart' });
+  } catch (error) {
+    console.error('Clear cart error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
 
 // Global error handler
