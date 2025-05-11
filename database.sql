@@ -15,7 +15,6 @@ CREATE TABLE IF NOT EXISTS products (
 -- Drop old tables if they exist
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS orders;
-DROP TABLE IF EXISTS cart_items;
 
 -- Create orders table
 CREATE TABLE IF NOT EXISTS orders (
@@ -42,6 +41,7 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
+
 
 -- Create cart_items table
 CREATE TABLE IF NOT EXISTS cart_items (
