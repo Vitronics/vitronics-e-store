@@ -42,6 +42,9 @@ CREATE TABLE IF NOT EXISTS order_items (
     FOREIGN KEY (product_id) REFERENCES products(id)
 );
 
+ALTER TABLE cart_items
+ADD COLUMN product_name VARCHAR(255),
+ADD COLUMN price DECIMAL(10,2);
 
 -- Create cart_items table
 CREATE TABLE IF NOT EXISTS cart_items (
