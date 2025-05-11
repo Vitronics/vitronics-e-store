@@ -1,22 +1,44 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
   const cartTableBody = document.getElementById('cart-table-body');
   const cartCountEl = document.querySelector('.cart-count');
   const totalPriceEl = document.querySelector('.total-price');
 
-  // Fetch and display cart data
-  fetchCartData();
+  try {
+    // Load initial cart data
+    const cartData = await fetchCartData();
+    renderCartTable(cartData.items, cartData.cartCount);
+    
+    // Set up event listeners
+    setupCartEventListeners();
+  } catch (error) {
+    console.error('Initial cart load failed:', error);
+    renderCartTable([], 0); // Show empty cart
+    showToast('Failed to load cart. Please refresh the page.', 'error');
+  }
 
   async function fetchCartData() {
     try {
       const response = await fetch('/api/cart');
-      if (!response.ok) throw new Error('Failed to load cart');
       
-      const { items, cartCount } = await response.json();
-      renderCartTable(items, cartCount);
+      // Check if response is OK (status 200-299)
+      if (!response.ok) {
+        // Try to get error details from response
+        let errorMsg = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorData.message || errorMsg;
+        } catch (e) {
+          // If we can't parse JSON error, use the text
+          const text = await response.text();
+          if (text) errorMsg = text;
+        }
+        throw new Error(errorMsg);
+      }
+      
+      return await response.json();
     } catch (error) {
-      console.error('Error loading cart:', error);
-      showToast('Failed to load cart', 'error');
-      renderCartTable([], 0); // Show empty table
+      console.error('Error fetching cart:', error);
+      throw error;
     }
   }
 
@@ -25,14 +47,14 @@ document.addEventListener('DOMContentLoaded', function() {
     cartTableBody.innerHTML = '';
     
     // Update cart count
-    cartCountEl.textContent = cartCount || 0;
+    if (cartCountEl) cartCountEl.textContent = cartCount || 0;
     
     // Calculate total price
     let totalPrice = 0;
 
-    if (items.length === 0) {
-      cartTableBody.innerHTML = '<tr><td colspan="5">Your cart is empty</td></tr>';
-      totalPriceEl.textContent = 'Ksh 0.00';
+    if (!items || items.length === 0) {
+      cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Your cart is empty</td></tr>';
+      if (totalPriceEl) totalPriceEl.textContent = 'Ksh 0.00';
       return;
     }
 
@@ -43,65 +65,68 @@ document.addEventListener('DOMContentLoaded', function() {
       
       const row = document.createElement('tr');
       row.innerHTML = `
-        <td>
-          <img src="${item.product_image}" alt="${item.product_name}" width="50">
+        <td class="align-middle">
+          <img src="${item.product_image}" alt="${item.product_name}" width="50" class="mr-2">
           ${item.product_name}
         </td>
-        <td>Ksh ${parseFloat(item.price).toFixed(2)}</td>
-        <td>
-          <button class="decrease-qty" data-id="${item.product_id}">-</button>
-          <input type="number" class="quantity-input" 
-                 data-id="${item.product_id}" 
-                 value="${item.quantity}" min="1">
-          <button class="increase-qty" data-id="${item.product_id}">+</button>
+        <td class="align-middle">Ksh ${parseFloat(item.price).toFixed(2)}</td>
+        <td class="align-middle">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary decrease-qty" data-id="${item.product_id}">-</button>
+            <input type="number" class="form-control form-control-sm quantity-input mx-2" 
+                   data-id="${item.product_id}" 
+                   value="${item.quantity}" min="1" style="width: 60px;">
+            <button class="btn btn-sm btn-outline-secondary increase-qty" data-id="${item.product_id}">+</button>
+          </div>
         </td>
-        <td>Ksh ${subtotal.toFixed(2)}</td>
-        <td>
-          <button class="remove-btn" data-id="${item.product_id}">Remove</button>
+        <td class="align-middle">Ksh ${subtotal.toFixed(2)}</td>
+        <td class="align-middle">
+          <button class="btn btn-sm btn-outline-danger remove-btn" data-id="${item.product_id}">
+            <i class="fa fa-trash"></i>
+          </button>
         </td>
       `;
       cartTableBody.appendChild(row);
     });
 
     // Update total price
-    totalPriceEl.textContent = `Ksh ${totalPrice.toFixed(2)}`;
+    if (totalPriceEl) totalPriceEl.textContent = `Ksh ${totalPrice.toFixed(2)}`;
   }
 
-  // Event delegation for cart actions
-  document.addEventListener('click', async (e) => {
-    if (e.target.classList.contains('remove-btn')) {
-      await removeItem(e.target.dataset.id);
-    } else if (e.target.classList.contains('increase-qty')) {
-      await updateQuantity(e.target.dataset.id, 1);
-    } else if (e.target.classList.contains('decrease-qty')) {
-      await updateQuantity(e.target.dataset.id, -1);
-    }
-  });
+  function setupCartEventListeners() {
+    // Event delegation for cart actions
+    document.addEventListener('click', async (e) => {
+      try {
+        if (e.target.closest('.remove-btn')) {
+          const btn = e.target.closest('.remove-btn');
+          await removeItem(btn.dataset.id);
+        } else if (e.target.closest('.increase-qty')) {
+          const btn = e.target.closest('.increase-qty');
+          await updateQuantity(btn.dataset.id, 1);
+        } else if (e.target.closest('.decrease-qty')) {
+          const btn = e.target.closest('.decrease-qty');
+          await updateQuantity(btn.dataset.id, -1);
+        }
+      } catch (error) {
+        console.error('Action error:', error);
+        showToast(error.message, 'error');
+      }
+    });
 
-  // Handle quantity input changes
-  cartTableBody.addEventListener('change', async (e) => {
-    if (e.target.classList.contains('quantity-input')) {
-      const productId = e.target.dataset.id;
-      const newQty = parseInt(e.target.value) || 1;
-      await updateQuantity(productId, newQty, true);
-    }
-  });
-
-  // Remove item from cart
-  async function removeItem(productId) {
-    try {
-      const response = await fetch(`/api/cart/${productId}`, {
-        method: 'DELETE'
-      });
-      
-      if (!response.ok) throw new Error('Failed to remove item');
-      
-      showToast('Item removed from cart');
-      await fetchCartData();
-    } catch (error) {
-      console.error('Error removing item:', error);
-      showToast(error.message, 'error');
-    }
+    // Handle quantity input changes
+    cartTableBody.addEventListener('change', async (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        try {
+          const input = e.target;
+          const productId = input.dataset.id;
+          const newQty = parseInt(input.value) || 1;
+          await updateQuantity(productId, newQty, true);
+        } catch (error) {
+          console.error('Quantity change error:', error);
+          showToast('Failed to update quantity', 'error');
+        }
+      }
+    });
   }
 
   // Update item quantity
