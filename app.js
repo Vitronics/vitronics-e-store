@@ -512,6 +512,10 @@ app.post('/api/checkout/order', async (req, res) => {
     totalAmount
   } = req.body;
 
+  if (!firstName || !email || !cartItems || cartItems.length === 0) {
+      return res.json({ success: false, error: 'Missing required fields or cart is empty' });
+    }
+
   try {
     // Start transaction
     const connection = await pool.getConnection();

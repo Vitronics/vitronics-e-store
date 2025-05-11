@@ -71,3 +71,30 @@ CREATE TABLE IF NOT EXISTS orders (
 -- ADD COLUMN product_name VARCHAR(255),
 -- ADD COLUMN price DECIMAL(10,2);
 ALTER TABLE cart_items MODIFY user_id VARCHAR(255) DEFAULT NULL;
+
+
+DROP TABLE IF EXISTS orders;
+CREATE TABLE IF NOT EXISTS orders (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    first_name VARCHAR(100) NOT NULL,
+    last_name VARCHAR(100) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    phone VARCHAR(50) NOT NULL,
+    city VARCHAR(100) NOT NULL,
+    notes TEXT,
+    payment_method VARCHAR(50) NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+DROP TABLE IF EXISTS order_items;
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    product_name VARCHAR(255) NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id)
+);
