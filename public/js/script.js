@@ -1,37 +1,256 @@
-document.addEventListener('DOMContentLoaded', () => {
-  const cartIcons    = document.querySelectorAll('.fa-shopping-cart');
-  const clearCartBtn = document.getElementById('clear-cart');
-  const cartList     = document.getElementById('cart-items-list');
-  const subtotalEl   = document.getElementById('subtotal');
-  const totalEl      = document.getElementById('total');
+// document.addEventListener('DOMContentLoaded', () => {
+//   const cartIcons    = document.querySelectorAll('.fa-shopping-cart');
+//   const clearCartBtn = document.getElementById('clear-cart');
+//   const cartList     = document.getElementById('cart-items-list');
+//   const subtotalEl   = document.getElementById('subtotal');
+//   const totalEl      = document.getElementById('total');
 
-  updateCartUI();
-  renderCartTable();
-  renderCheckoutSummary();
+//   updateCartUI();
+//   renderCartTable();
+//   renderCheckoutSummary();
+
+//   // ─── Add to cart ──────────────────────────────
+//   cartIcons.forEach(icon => {
+//     icon.addEventListener('click', async () => {
+//       const productEl = icon.closest('.featured__item');
+//       const name  = productEl.dataset.name;
+//       const price = parseFloat(productEl.dataset.price);
+
+//       const res = await fetch('/api/cart/add', {
+//         method: 'POST',
+//         headers: { 'Content-Type': 'application/json' },
+//         body: JSON.stringify({ name, price, quantity: 1 })
+//       });
+//       const json = await res.json();
+
+//       if (res.ok) {
+//         alert('Item has been added!');
+//       } else {
+//         alert(json.error || 'Could not add to cart');
+//       }
+
+//       await updateCartUI();
+//       await renderCartTable();
+//       await renderCheckoutSummary();
+//     });
+//   });
+
+//   // ─── Remove item ──────────────────────────────
+//   document.addEventListener('click', async e => {
+//     if (e.target.classList.contains('remove-btn')) {
+//       const name = e.target.dataset.name;
+//       const res = await fetch(`/api/cart/name/${encodeURIComponent(name)}`, {
+//         method: 'DELETE'
+//       });
+//       const json = await res.json();
+//       if (!res.ok) alert(json.error || 'Could not remove item');
+
+//       await updateCartUI();
+//       await renderCartTable();
+//       await renderCheckoutSummary();
+//     }
+//   });
+
+//   // ─── Clear cart ───────────────────────────────
+//  clearCartBtn?.addEventListener('click', async () => {
+//   if (!confirm('Are you sure you want to clear the cart?')) return;
+  
+//   try {
+//     const response = await fetch('/api/cart', { method: 'DELETE' });
+    
+//     if (!response.ok) {
+//       const error = await response.json();
+//       throw new Error(error.error || 'Failed to clear cart');
+//     }
+    
+//     alert('Cart has been cleared!');
+//     await updateCartUI();
+//     await renderCartTable();
+//     await renderCheckoutSummary();
+//   } catch (error) {
+//     alert(error.message);
+//   }
+// });
+
+
+//   // ─── Helpers ──────────────────────────────────
+
+//   async function fetchCart() {
+//     const res = await fetch('/api/cart');
+//     return res.ok ? await res.json() : [];
+//   }
+
+//   async function updateCartUI() {
+//     const cart = await fetchCart();
+//     let totalItems = 0, totalPrice = 0;
+
+//     cart.forEach(item => {
+//       totalItems += item.quantity;
+//       totalPrice += item.quantity * item.price;
+//     });
+
+//     document.querySelectorAll('.cart-count')
+//       .forEach(el => el.textContent = totalItems);
+
+//     document.querySelectorAll('.total-price')
+//       .forEach(el => el.textContent = 'Ksh ' + totalPrice.toFixed(2));
+//   }
+
+//   async function renderCartTable() {
+//     const cart = await fetchCart();
+//     const tableBody = document.getElementById('cart-table-body');
+//     const totalCostEl = document.querySelector('.total-cost');
+
+//     if (!tableBody) return;
+//     tableBody.innerHTML = '';
+//     let total = 0;
+
+//     if (cart.length === 0) {
+//       tableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+//       totalCostEl && (totalCostEl.textContent = 'Total: Ksh 0.00');
+//       return;
+//     }
+
+//     cart.forEach(item => {
+//       const subtotal = item.quantity * item.price;
+//       total += subtotal;
+//       const row = document.createElement('tr');
+//       row.innerHTML = `
+//         <td>${item.product_name}</td>
+//         <td>Ksh ${item.price.toFixed(2)}</td>
+//         <td>
+//           <button class="decrease-qty" data-name="${item.product_name}">–</button>
+//           <input type="number" class="quantity-input"
+//             data-name="${item.product_name}" value="${item.quantity}" min="1" />
+//           <button class="increase-qty" data-name="${item.product_name}">+</button>
+//         </td>
+//         <td>Ksh ${subtotal.toFixed(2)}</td>
+//         <td><button class="remove-btn" data-name="${item.product_name}">Remove</button></td>
+//       `;
+//       tableBody.appendChild(row);
+//     });
+
+//     if (totalCostEl) {
+//       totalCostEl.textContent = `Total: Ksh ${total.toFixed(2)}`;
+//     }
+
+//     tableBody.querySelectorAll('.quantity-input').forEach(input => {
+//       input.addEventListener('change', async () => {
+//         let newQty = parseInt(input.value) || 1;
+//         const name = input.dataset.name;
+//         const currentQty = parseInt(input.getAttribute('value'));
+
+//         await fetch('/api/cart/add', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify({
+//             name,
+//             quantity: newQty - currentQty
+//           })
+//         });
+
+//         await updateCartUI();
+//         await renderCartTable();
+//         await renderCheckoutSummary();
+//       });
+//     });
+
+//     tableBody.querySelectorAll('.increase-qty').forEach(btn => {
+//       btn.addEventListener('click', async () => {
+//         const name = btn.dataset.name;
+//         await fetch('/api/cart/add', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify({ name, quantity: 1 })
+//         });
+//         await updateCartUI();
+//         await renderCartTable();
+//         await renderCheckoutSummary();
+//       });
+//     });
+
+//     tableBody.querySelectorAll('.decrease-qty').forEach(btn => {
+//       btn.addEventListener('click', async () => {
+//         const name = btn.dataset.name;
+//         await fetch('/api/cart/add', {
+//           method: 'POST',
+//           headers: { 'Content-Type': 'application/json' },
+//           body: JSON.stringify({ name, quantity: -1 })
+//         });
+//         await updateCartUI();
+//         await renderCartTable();
+//         await renderCheckoutSummary();
+//       });
+//     });
+//   }
+
+//   async function renderCheckoutSummary() {
+//     const cart = await fetchCart();
+//     cartList.innerHTML = '';
+//     let subtotal = 0;
+
+//     cart.forEach(item => {
+//       const lineTotal = item.price * item.quantity;
+//       const li = document.createElement('li');
+//       li.textContent = `${item.product_name} — Ksh ${lineTotal.toFixed(2)}`;
+//       cartList.appendChild(li);
+//       subtotal += lineTotal;
+//     });
+
+//     subtotalEl.textContent = `Ksh ${subtotal.toFixed(2)}`;
+//     totalEl.textContent    = `Ksh ${subtotal.toFixed(2)}`;
+//   }
+
+//   // Optional: place order
+//   document.querySelector('button[type="submit"]')?.addEventListener('click', e => {
+//     e.preventDefault();
+//     alert('Order placed!');
+//   });
+// });
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+  // Safely get DOM elements with null checks
+  const cartIcons = document.querySelectorAll('.fa-shopping-cart');
+  const clearCartBtn = document.getElementById('clear-cart');
+  const cartList = document.getElementById('cart-items-list');
+  const subtotalEl = document.getElementById('subtotal');
+  const totalEl = document.getElementById('total');
+  const cartTableBody = document.getElementById('cart-table-body');
+  const totalCostEl = document.querySelector('.total-cost');
+
+  // Initialize UI only if elements exist
+  if (cartTableBody) updateCartUI().then(renderCartTable);
+  if (cartList) renderCheckoutSummary();
 
   // ─── Add to cart ──────────────────────────────
   cartIcons.forEach(icon => {
     icon.addEventListener('click', async () => {
       const productEl = icon.closest('.featured__item');
-      const name  = productEl.dataset.name;
+      if (!productEl) return;
+
+      const name = productEl.dataset.name;
       const price = parseFloat(productEl.dataset.price);
 
-      const res = await fetch('/api/cart/add', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, price, quantity: 1 })
-      });
-      const json = await res.json();
-
-      if (res.ok) {
-        alert('Item has been added!');
-      } else {
-        alert(json.error || 'Could not add to cart');
+      try {
+        const res = await fetch('/api/cart/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, price, quantity: 1 })
+        });
+        
+        if (res.ok) {
+          alert('Item has been added!');
+          await safeUpdateUI();
+        } else {
+          const json = await res.json();
+          alert(json.error || 'Could not add to cart');
+        }
+      } catch (error) {
+        console.error('Add to cart error:', error);
+        alert('Failed to add item to cart');
       }
-
-      await updateCartUI();
-      await renderCartTable();
-      await renderCheckoutSummary();
     });
   });
 
@@ -39,166 +258,217 @@ document.addEventListener('DOMContentLoaded', () => {
   document.addEventListener('click', async e => {
     if (e.target.classList.contains('remove-btn')) {
       const name = e.target.dataset.name;
-      const res = await fetch(`/api/cart/name/${encodeURIComponent(name)}`, {
-        method: 'DELETE'
-      });
-      const json = await res.json();
-      if (!res.ok) alert(json.error || 'Could not remove item');
-
-      await updateCartUI();
-      await renderCartTable();
-      await renderCheckoutSummary();
+      try {
+        const res = await fetch(`/api/cart/name/${encodeURIComponent(name)}`, {
+          method: 'DELETE'
+        });
+        
+        if (!res.ok) {
+          const json = await res.json();
+          alert(json.error || 'Could not remove item');
+        }
+        
+        await safeUpdateUI();
+      } catch (error) {
+        console.error('Remove item error:', error);
+        alert('Failed to remove item');
+      }
     }
   });
 
   // ─── Clear cart ───────────────────────────────
- clearCartBtn?.addEventListener('click', async () => {
-  if (!confirm('Are you sure you want to clear the cart?')) return;
-  
-  try {
-    const response = await fetch('/api/cart', { method: 'DELETE' });
+  clearCartBtn?.addEventListener('click', async () => {
+    if (!confirm('Are you sure you want to clear the cart?')) return;
     
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error || 'Failed to clear cart');
+    try {
+      const response = await fetch('/api/cart', { method: 'DELETE' });
+      
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to clear cart');
+      }
+      
+      alert('Cart has been cleared!');
+      await safeUpdateUI();
+    } catch (error) {
+      console.error('Clear cart error:', error);
+      alert(error.message);
     }
-    
-    alert('Cart has been cleared!');
-    await updateCartUI();
-    await renderCartTable();
-    await renderCheckoutSummary();
-  } catch (error) {
-    alert(error.message);
-  }
-});
-
+  });
 
   // ─── Helpers ──────────────────────────────────
+  async function safeUpdateUI() {
+    try {
+      await updateCartUI();
+      if (cartTableBody) await renderCartTable();
+      if (cartList) await renderCheckoutSummary();
+    } catch (error) {
+      console.error('UI update error:', error);
+    }
+  }
 
   async function fetchCart() {
-    const res = await fetch('/api/cart');
-    return res.ok ? await res.json() : [];
+    try {
+      const res = await fetch('/api/cart');
+      return res.ok ? await res.json() : [];
+    } catch (error) {
+      console.error('Fetch cart error:', error);
+      return [];
+    }
   }
 
   async function updateCartUI() {
-    const cart = await fetchCart();
-    let totalItems = 0, totalPrice = 0;
+    try {
+      const cart = await fetchCart();
+      let totalItems = 0, totalPrice = 0;
 
-    cart.forEach(item => {
-      totalItems += item.quantity;
-      totalPrice += item.quantity * item.price;
-    });
+      cart.forEach(item => {
+        totalItems += item.quantity;
+        totalPrice += item.quantity * item.price;
+      });
 
-    document.querySelectorAll('.cart-count')
-      .forEach(el => el.textContent = totalItems);
+      document.querySelectorAll('.cart-count')
+        .forEach(el => el.textContent = totalItems);
 
-    document.querySelectorAll('.total-price')
-      .forEach(el => el.textContent = 'Ksh ' + totalPrice.toFixed(2));
+      document.querySelectorAll('.total-price')
+        .forEach(el => el.textContent = 'Ksh ' + totalPrice.toFixed(2));
+    } catch (error) {
+      console.error('Update cart UI error:', error);
+    }
   }
 
   async function renderCartTable() {
-    const cart = await fetchCart();
-    const tableBody = document.getElementById('cart-table-body');
-    const totalCostEl = document.querySelector('.total-cost');
+    if (!cartTableBody) return;
+    
+    try {
+      const cart = await fetchCart();
+      cartTableBody.innerHTML = '';
+      
+      if (cart.length === 0) {
+        cartTableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+        if (totalCostEl) totalCostEl.textContent = 'Total: Ksh 0.00';
+        return;
+      }
 
-    if (!tableBody) return;
-    tableBody.innerHTML = '';
-    let total = 0;
+      let total = 0;
+      cart.forEach(item => {
+        const subtotal = item.quantity * item.price;
+        total += subtotal;
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.product_name}</td>
+          <td>Ksh ${item.price.toFixed(2)}</td>
+          <td>
+            <button class="decrease-qty" data-name="${item.product_name}">–</button>
+            <input type="number" class="quantity-input"
+              data-name="${item.product_name}" value="${item.quantity}" min="1" />
+            <button class="increase-qty" data-name="${item.product_name}">+</button>
+          </td>
+          <td>Ksh ${subtotal.toFixed(2)}</td>
+          <td><button class="remove-btn" data-name="${item.product_name}">Remove</button></td>
+        `;
+        cartTableBody.appendChild(row);
+      });
 
-    if (cart.length === 0) {
-      tableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
-      totalCostEl && (totalCostEl.textContent = 'Total: Ksh 0.00');
-      return;
+      if (totalCostEl) {
+        totalCostEl.textContent = `Total: Ksh ${total.toFixed(2)}`;
+      }
+
+      // Add event listeners to new elements
+      addQuantityEventListeners();
+    } catch (error) {
+      console.error('Render cart table error:', error);
+      cartTableBody.innerHTML = '<tr><td colspan="5">Error loading cart</td></tr>';
     }
+  }
 
-    cart.forEach(item => {
-      const subtotal = item.quantity * item.price;
-      total += subtotal;
-      const row = document.createElement('tr');
-      row.innerHTML = `
-        <td>${item.product_name}</td>
-        <td>Ksh ${item.price.toFixed(2)}</td>
-        <td>
-          <button class="decrease-qty" data-name="${item.product_name}">–</button>
-          <input type="number" class="quantity-input"
-            data-name="${item.product_name}" value="${item.quantity}" min="1" />
-          <button class="increase-qty" data-name="${item.product_name}">+</button>
-        </td>
-        <td>Ksh ${subtotal.toFixed(2)}</td>
-        <td><button class="remove-btn" data-name="${item.product_name}">Remove</button></td>
-      `;
-      tableBody.appendChild(row);
-    });
+  function addQuantityEventListeners() {
+    if (!cartTableBody) return;
 
-    if (totalCostEl) {
-      totalCostEl.textContent = `Total: Ksh ${total.toFixed(2)}`;
-    }
-
-    tableBody.querySelectorAll('.quantity-input').forEach(input => {
+    cartTableBody.querySelectorAll('.quantity-input').forEach(input => {
       input.addEventListener('change', async () => {
         let newQty = parseInt(input.value) || 1;
         const name = input.dataset.name;
         const currentQty = parseInt(input.getAttribute('value'));
 
-        await fetch('/api/cart/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            name,
-            quantity: newQty - currentQty
-          })
-        });
-
-        await updateCartUI();
-        await renderCartTable();
-        await renderCheckoutSummary();
+        try {
+          await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name,
+              quantity: newQty - currentQty
+            })
+          });
+          await safeUpdateUI();
+        } catch (error) {
+          console.error('Quantity change error:', error);
+        }
       });
     });
 
-    tableBody.querySelectorAll('.increase-qty').forEach(btn => {
+    cartTableBody.querySelectorAll('.increase-qty').forEach(btn => {
       btn.addEventListener('click', async () => {
         const name = btn.dataset.name;
-        await fetch('/api/cart/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, quantity: 1 })
-        });
-        await updateCartUI();
-        await renderCartTable();
-        await renderCheckoutSummary();
+        try {
+          await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, quantity: 1 })
+          });
+          await safeUpdateUI();
+        } catch (error) {
+          console.error('Increase quantity error:', error);
+        }
       });
     });
 
-    tableBody.querySelectorAll('.decrease-qty').forEach(btn => {
+    cartTableBody.querySelectorAll('.decrease-qty').forEach(btn => {
       btn.addEventListener('click', async () => {
         const name = btn.dataset.name;
-        await fetch('/api/cart/add', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ name, quantity: -1 })
-        });
-        await updateCartUI();
-        await renderCartTable();
-        await renderCheckoutSummary();
+        try {
+          await fetch('/api/cart/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, quantity: -1 })
+          });
+          await safeUpdateUI();
+        } catch (error) {
+          console.error('Decrease quantity error:', error);
+        }
       });
     });
   }
 
   async function renderCheckoutSummary() {
-    const cart = await fetchCart();
-    cartList.innerHTML = '';
-    let subtotal = 0;
+    if (!cartList || !subtotalEl || !totalEl) return;
+    
+    try {
+      const cart = await fetchCart();
+      cartList.innerHTML = '';
+      let subtotal = 0;
 
-    cart.forEach(item => {
-      const lineTotal = item.price * item.quantity;
-      const li = document.createElement('li');
-      li.textContent = `${item.product_name} — Ksh ${lineTotal.toFixed(2)}`;
-      cartList.appendChild(li);
-      subtotal += lineTotal;
-    });
+      if (cart.length === 0) {
+        cartList.innerHTML = '<li>Your cart is empty</li>';
+        subtotalEl.textContent = 'Ksh 0.00';
+        totalEl.textContent = 'Ksh 0.00';
+        return;
+      }
 
-    subtotalEl.textContent = `Ksh ${subtotal.toFixed(2)}`;
-    totalEl.textContent    = `Ksh ${subtotal.toFixed(2)}`;
+      cart.forEach(item => {
+        const lineTotal = item.price * item.quantity;
+        const li = document.createElement('li');
+        li.textContent = `${item.product_name} — Ksh ${lineTotal.toFixed(2)}`;
+        cartList.appendChild(li);
+        subtotal += lineTotal;
+      });
+
+      subtotalEl.textContent = `Ksh ${subtotal.toFixed(2)}`;
+      totalEl.textContent = `Ksh ${subtotal.toFixed(2)}`;
+    } catch (error) {
+      console.error('Render checkout summary error:', error);
+      cartList.innerHTML = '<li>Error loading cart</li>';
+    }
   }
 
   // Optional: place order
