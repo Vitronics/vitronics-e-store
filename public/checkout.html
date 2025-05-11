@@ -239,7 +239,7 @@
 
 
   <script>
-   document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
   const cartItemsList = document.getElementById('cart-items-list');
   const subtotalEl = document.getElementById('subtotal');
   const totalEl = document.getElementById('total');
@@ -254,16 +254,11 @@
       if (!response.ok) throw new Error('Failed to load cart');
       
       const { items, total } = await response.json();
-      
-      // Log the fetched data
-      console.log('Fetched cart items:', items);
-      console.log('Total:', total);
-
       renderCartItems(items, total);
     } catch (error) {
       console.error('Error loading cart:', error);
       showToast('Failed to load cart items', 'error');
-      renderCartItems([], 0);  // Show empty cart message if error occurs
+      renderCartItems([], 0);
     }
   }
 
@@ -289,14 +284,14 @@
       li.innerHTML = `
         ${item.product_name} 
         <span class="badge bg-primary rounded-pill">${item.quantity}</span>
-        <span>Ksh ${(item.price * item.quantity).toFixed(2)}</span>
+        <span>Ksh ${(parseFloat(item.price) * item.quantity).toFixed(2)}</span>
       `;
       cartItemsList.appendChild(li);
     });
 
     // Update totals
-    subtotalEl.textContent = `Ksh ${total.toFixed(2)}`;
-    totalEl.textContent = `Ksh ${total.toFixed(2)}`;
+    subtotalEl.textContent = `Ksh ${(parseFloat(total)).toFixed(2)}`;
+    totalEl.textContent = `Ksh ${(parseFloat(total)).toFixed(2)}`;
   }
 
   // Handle form submission
