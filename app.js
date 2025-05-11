@@ -396,33 +396,32 @@ app.post('/api/cart/add', async (req, res) => {
 });
 
 // Enhanced Get Cart endpoint with total count
+// Get all cart items from the database
 app.get('/api/cart', async (req, res) => {
-    try {
-        const [items] = await pool.query(`
-            SELECT 
-                c.id AS cart_id,
-                c.quantity,
-                p.id AS product_id,
-                p.product_name,
-                p.price,
-                p.product_image
-            FROM cart_items c
-            JOIN products p ON c.product_id = p.id
-        `);
+  try {
+    const [items] = await pool.query(`
+      SELECT 
+        c.id AS cart_id,
+        c.quantity,
+        p.id AS product_id,
+        p.product_name,
+        p.price,
+        p.product_image
+      FROM cart_items c
+      JOIN products p ON c.product_id = p.id
+    `);
 
-        const [[{ cartCount }]] = await pool.query(
-          'SELECT SUM(quantity) as cartCount FROM cart_items'
-        );
+    // Calculate total items and price
+    const [countRows] = await pool.query('SELECT SUM(quantity) AS cartCount FROM cart_items');
+    const cartCount = countRows[0]?.cartCount || 0;
 
-        res.json({
-          items,
-          cartCount: cartCount || 0
-        });
-    } catch (error) {
-        console.error('Get cart error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
+    res.json({ items, cartCount });
+  } catch (error) {
+    console.error('Error fetching cart:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
 });
+
 
 // Enhanced Clear Cart endpoint
 app.delete('/api/cart', async (req, res) => {
