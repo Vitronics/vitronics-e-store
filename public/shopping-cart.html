@@ -194,10 +194,89 @@
   </a>
 
   
-   
-   <!-- <script>
- 
-   </script>  -->
+   <script>
+ document.addEventListener('DOMContentLoaded', () => {
+  const cartTableBody = document.getElementById('cart-table-body');
+  const cartCountEl = document.querySelector('.cart-count');
+  const totalPriceEl = document.querySelector('.total-price');
+  const clearCartBtn = document.getElementById('clear-cart');
+
+  async function fetchCartData() {
+    try {
+      const res = await fetch('/api/cart');
+      const data = await res.json();
+      return data;
+    } catch (err) {
+      console.error('Fetch cart error:', err);
+      return { items: [], cartCount: 0 };
+    }
+  }
+
+  async function renderCartTable() {
+    const { items, cartCount } = await fetchCartData();
+
+    cartTableBody.innerHTML = '';
+    let totalPrice = 0;
+
+    if (items.length === 0) {
+      cartTableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+    } else {
+      items.forEach(item => {
+        const subtotal = item.price * item.quantity;
+        totalPrice += subtotal;
+
+        const row = document.createElement('tr');
+        row.innerHTML = `
+          <td>${item.product_name}</td>
+          <td>Ksh ${item.price.toFixed(2)}</td>
+          <td>${item.quantity}</td>
+          <td>Ksh ${subtotal.toFixed(2)}</td>
+          <td>
+            <button class="remove-btn" data-product-id="${item.product_id}">Remove</button>
+          </td>
+        `;
+        cartTableBody.appendChild(row);
+      });
+    }
+
+    // Update totals
+    cartCountEl.textContent = cartCount;
+    totalPriceEl.textContent = 'Ksh ' + totalPrice.toFixed(2);
+
+    // Attach remove handlers
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const productId = btn.dataset.productId;
+        const res = await fetch(`/api/cart/${productId}`, { method: 'DELETE' });
+        const json = await res.json();
+        if (res.ok) {
+          alert(json.message || 'Item removed');
+          await renderCartTable();
+        } else {
+          alert(json.error || 'Failed to remove item');
+        }
+      });
+    });
+  }
+
+  // Clear cart
+  clearCartBtn?.addEventListener('click', async () => {
+    if (!confirm('Are you sure you want to clear the cart?')) return;
+    const res = await fetch('/api/cart', { method: 'DELETE' });
+    const json = await res.json();
+    if (res.ok) {
+      alert(json.message);
+      await renderCartTable();
+    } else {
+      alert(json.error || 'Failed to clear cart');
+    }
+  });
+
+  // Initial render
+  renderCartTable();
+});
+
+   </script>  
 
    <!-- Shoping Cart Section End -->
 
