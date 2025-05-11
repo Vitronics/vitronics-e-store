@@ -467,6 +467,127 @@ app.use((err, req, res, next) => {
     });
 });
 
+////////////////////Order checkout////////////////////////
+// Get cart items for checkout
+app.get('/api/checkout/cart', async (req, res) => {
+  try {
+    const [items] = await pool.query(`
+      SELECT 
+        p.id AS product_id,
+        p.product_name,
+        p.price,
+        c.quantity
+      FROM cart_items c
+      JOIN products p ON c.product_id = p.id
+    `);
+
+    // Calculate total
+    const [[total]] = await pool.query(`
+      SELECT SUM(p.price * c.quantity) AS total
+      FROM cart_items c
+      JOIN products p ON c.product_id = p.id
+    `);
+
+    res.json({
+      items,
+      total: total.total || 0
+    });
+  } catch (error) {
+    console.error('Error fetching checkout cart:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+// Process order
+app.post('/api/checkout/order', async (req, res) => {
+  const {
+    firstName,
+    lastName,
+    email,
+    phone,
+    city,
+    notes,
+    paymentMethod,
+    cartItems,
+    totalAmount
+  } = req.body;
+
+  try {
+    // Start transaction
+    const connection = await pool.getConnection();
+    await connection.beginTransaction();
+
+    try {
+      // Insert order
+      const [orderResult] = await connection.query(
+        `INSERT INTO orders (
+          customer_name, 
+          customer_email, 
+          customer_phone, 
+          customer_city, 
+          order_notes, 
+          total_amount, 
+          payment_method
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          `${firstName} ${lastName}`,
+          email,
+          phone,
+          city,
+          notes,
+          totalAmount,
+          paymentMethod
+        ]
+      );
+
+      const orderId = orderResult.insertId;
+
+      // Insert order items
+      for (const item of cartItems) {
+        await connection.query(
+          `INSERT INTO order_items (
+            order_id,
+            product_id,
+            product_name,
+            price,
+            quantity
+          ) VALUES (?, ?, ?, ?, ?)`,
+          [
+            orderId,
+            item.product_id,
+            item.product_name,
+            item.price,
+            item.quantity
+          ]
+        );
+      }
+
+      // Clear cart
+      await connection.query('DELETE FROM cart_items');
+
+      // Commit transaction
+      await connection.commit();
+      connection.release();
+
+      res.json({
+        success: true,
+        orderId,
+        message: 'Order placed successfully'
+      });
+    } catch (error) {
+      await connection.rollback();
+      connection.release();
+      throw error;
+    }
+  } catch (error) {
+    console.error('Error processing order:', error);
+    res.status(500).json({ 
+      success: false,
+      error: 'Failed to process order' 
+    });
+  }
+});
+
 // Start server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

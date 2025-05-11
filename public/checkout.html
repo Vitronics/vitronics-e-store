@@ -255,6 +255,178 @@
   </section>
   <!-- Checkout End -->
 
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+  const cartItemsList = document.getElementById('cart-items-list');
+  const subtotalEl = document.getElementById('subtotal');
+  const totalEl = document.getElementById('total');
+  const checkoutForm = document.getElementById('checkout-form');
+  
+  // Load cart items on page load
+  loadCartItems();
+
+  async function loadCartItems() {
+    try {
+      const response = await fetch('/api/checkout/cart');
+      if (!response.ok) throw new Error('Failed to load cart');
+      
+      const { items, total } = await response.json();
+      renderCartItems(items, total);
+    } catch (error) {
+      console.error('Error loading cart:', error);
+      showToast('Failed to load cart items', 'error');
+      renderCartItems([], 0);
+    }
+  }
+
+  function renderCartItems(items, total) {
+    // Clear existing items
+    cartItemsList.innerHTML = '';
+    
+    if (items.length === 0) {
+      cartItemsList.innerHTML = `
+        <li class="list-group-item text-center py-3">
+          Your cart is empty
+        </li>
+      `;
+      subtotalEl.textContent = 'Ksh 0.00';
+      totalEl.textContent = 'Ksh 0.00';
+      return;
+    }
+
+    // Add items to list
+    items.forEach(item => {
+      const li = document.createElement('li');
+      li.className = 'list-group-item d-flex justify-content-between align-items-center';
+      li.innerHTML = `
+        ${item.product_name} 
+        <span class="badge bg-primary rounded-pill">${item.quantity}</span>
+        <span>Ksh ${(item.price * item.quantity).toFixed(2)}</span>
+      `;
+      cartItemsList.appendChild(li);
+    });
+
+    // Update totals
+    subtotalEl.textContent = `Ksh ${total.toFixed(2)}`;
+    totalEl.textContent = `Ksh ${total.toFixed(2)}`;
+  }
+
+  // Handle form submission
+  checkoutForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    // Get form values
+    const firstName = document.getElementById('first-name').value;
+    const lastName = document.getElementById('last-name').value;
+    const email = document.getElementById('email').value;
+    const phone = document.getElementById('phone').value;
+    const city = document.getElementById('city').value;
+    const notes = document.getElementById('order-notes').value;
+    
+    // Get payment method
+    const paymentMethod = document.getElementById('paypal').checked ? 'M-PESA' : 
+                         document.getElementById('payment-check').checked ? 'Check' : '';
+    
+    if (!paymentMethod) {
+      showToast('Please select a payment method', 'error');
+      return;
+    }
+
+    // Get cart items
+    const cartResponse = await fetch('/api/checkout/cart');
+    if (!cartResponse.ok) {
+      showToast('Failed to get cart items', 'error');
+      return;
+    }
+    const { items, total } = await cartResponse.json();
+
+    if (items.length === 0) {
+      showToast('Your cart is empty', 'error');
+      return;
+    }
+
+    // Submit order
+    try {
+      const response = await fetch('/api/checkout/order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email,
+          phone,
+          city,
+          notes,
+          paymentMethod,
+          cartItems: items,
+          totalAmount: total
+        })
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        showToast('Order placed successfully!', 'success');
+        // Redirect to order confirmation page or clear form
+        window.location.href = `/order-confirmation.html?orderId=${result.orderId}`;
+      } else {
+        showToast(result.error || 'Failed to place order', 'error');
+      }
+    } catch (error) {
+      console.error('Error placing order:', error);
+      showToast('Failed to place order', 'error');
+    }
+  });
+
+  // Toast notification function
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }, 100);
+
+    // Add styles if not already present
+    if (!document.getElementById('toast-styles')) {
+      const style = document.createElement('style');
+      style.id = 'toast-styles';
+      style.textContent = `
+        .toast {
+          position: fixed;
+          bottom: 20px;
+          left: 50%;
+          transform: translateX(-50%);
+          background: #4CAF50;
+          color: white;
+          padding: 12px 24px;
+          border-radius: 4px;
+          opacity: 0;
+          transition: opacity 0.3s;
+          z-index: 1000;
+        }
+        .toast.error {
+          background: #f44336;
+        }
+        .toast.show {
+          opacity: 1;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+  }
+});
+  </script>
+
   <!-- JS -->
   
  <!-- Js Plugins -->
