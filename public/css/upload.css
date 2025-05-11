@@ -68,6 +68,18 @@ button {
 }
 
 
+	  .back-btn {
+		display: inline-block;
+		margin: 1rem 0;
+		padding: 0.5rem 1rem;
+		background: #4299e1;
+		color: white;
+		border-radius: 5px;
+		text-decoration: none;
+	  }
+	  .back-btn:hover {
+		background: #3182ce;
+	  }
 
 .product-card {
 border: 1px solid #e2e8f0;
