@@ -183,27 +183,12 @@
                 <input type="text" id="last-name" class="form-control" required>
               </div>
             </div>
-            <!-- <div class="mb-3">
-              <label for="country">Country *</label>
-              <input type="text" id="country" class="form-control" required>
-            </div> -->
-            <!-- <div class="mb-3">
-              <label for="address">Address *</label>
-              <input type="text" id="address" class="form-control mb-2" placeholder="Street Address" required>
-              <input type="text" class="form-control" placeholder="Apartment, suite, unit etc (optional)">
-            </div> -->
+          
             <div class="mb-3">
               <label for="city">Town/City *</label>
               <input type="text" id="city" class="form-control" required>
             </div>
-            <!-- <div class="mb-3">
-              <label for="state">State *</label>
-              <input type="text" id="state" class="form-control" required>
-            </div> -->
-            <!-- <div class="mb-3">
-              <label for="zip">Postcode / ZIP *</label>
-              <input type="text" id="zip" class="form-control" required>
-            </div> -->
+          
             <div class="row">
               <div class="col-md-6 mb-3">
                 <label for="phone">Phone *</label>
@@ -214,10 +199,7 @@
                 <input type="email" id="email" class="form-control" required>
               </div>
             </div>
-            <!-- <div class="form-check mb-3">
-              <input type="checkbox" class="form-check-input" id="create-account">
-              <label class="form-check-label" for="create-account">Create an account?</label>
-            </div> -->
+          
             <div class="mb-3">
               <label for="order-notes">Order Notes</label>
               <input type="text" id="order-notes" class="form-control" placeholder="Notes about your order, e.g. delivery instructions">
@@ -257,7 +239,7 @@
 
 
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+   document.addEventListener('DOMContentLoaded', function() {
   const cartItemsList = document.getElementById('cart-items-list');
   const subtotalEl = document.getElementById('subtotal');
   const totalEl = document.getElementById('total');
@@ -272,11 +254,16 @@
       if (!response.ok) throw new Error('Failed to load cart');
       
       const { items, total } = await response.json();
+      
+      // Log the fetched data
+      console.log('Fetched cart items:', items);
+      console.log('Total:', total);
+
       renderCartItems(items, total);
     } catch (error) {
       console.error('Error loading cart:', error);
       showToast('Failed to load cart items', 'error');
-      renderCartItems([], 0);
+      renderCartItems([], 0);  // Show empty cart message if error occurs
     }
   }
 
@@ -371,7 +358,7 @@
       if (result.success) {
         showToast('Order placed successfully!', 'success');
         // Redirect to order confirmation page or clear form
-        window.location.href = `/order-confirmation.html?orderId=${result.orderId}`;
+        window.location.href = `/confirm.html?orderId=${result.orderId}`;
       } else {
         showToast(result.error || 'Failed to place order', 'error');
       }
@@ -425,6 +412,7 @@
     }
   }
 });
+
   </script>
 
   <!-- JS -->
