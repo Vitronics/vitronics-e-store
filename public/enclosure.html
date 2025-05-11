@@ -230,83 +230,84 @@
 </div>
 </div>
 </section>
-  <script >
-    async function loadProducts() {
+  <script>
+  async function loadProducts() {
+    try {
+      const response = await fetch('/api/upload/plc');
+      const products = await response.json();
+      const container = document.getElementById('productsContainer');
+      container.innerHTML = '';
+
+      products.forEach(product => {
+        const productCard = `
+          <div class="featured__item"
+               data-id="${product.id}"
+               data-name="${product.name}"
+               data-price="${product.price}">
+            <div class="featured__item__pic set-bg"
+                 style=" background-image: url('${product.productImage}') ">
+              <ul class="featured__item__pic__hover">
+                <li><a href="#"><i class="fa fa-heart"></i></a></li>
+                <li>
+                  <a href="#"
+                     class="add-to-cart"
+                     data-id="${product.id}"
+                     data-name="${product.name}"
+                     data-price="${product.price}">
+                    <i class="fa fa-shopping-cart"></i>
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div class="product-details">
+              <h5>${product.name}</h5>
+              <p class="price-tag">KSH ${product.price}</p>
+              <p class="qty">In Stock: ${product.quantity}</p>
+            </div>
+          </div>
+        `;
+        container.insertAdjacentHTML('beforeend', productCard);
+      });
+
+    } catch (error) {
+      console.error('Error loading products:', error);
+    }
+  }
+
+  document.addEventListener('click', async function (e) {
+    const target = e.target.closest('.add-to-cart');
+    if (target) {
+      e.preventDefault();
+      const product_id = target.getAttribute('data-id');
+      const name       = target.getAttribute('data-name');
+      const price      = parseFloat(target.getAttribute('data-price'));
+
       try {
-        // Corrected endpoint and category
-        const response = await fetch('/api/upload/enclosure');
-        const products = await response.json();
-        const container = document.getElementById('productsContainer');
-        container.innerHTML = '';
-
-        products.forEach(product => {
-            const productCard = `
-  <div class="featured__item" data-name="${product.name}" data-price="${product.price}">
-    <div class="featured__item__pic set-bg" style="background-image: url('${product.productImage}')">
-      <ul class="featured__item__pic__hover">
-         <li><a href="#"><i class="fa fa-heart"></i></a></li>
-        <li>
-          <a href="#" 
-             class="add-to-cart" 
-             data-name="${product.name}" 
-             data-price="${product.price}" 
-             data-image="${product.imageUrl}">
-            <i class="fa fa-shopping-cart"></i>
-          </a>
-        </li>
-      </ul>
-    </div>
-    <div class="product-details">
-      <h5>${product.name}</h5>
-      <p class="price-tag">KSH ${product.price}</p>
-      <p class="qty">In Stock: ${product.quantity}</p>
-  
-    </div>
-  </div>
-`;
-
-// This code should be wrapped in product card above
-        //    // <p>Voltage: ${product.voltage || 'N/A'}</p>
-                // <p>Supply: ${product.supply || 'N/A'}</p>
-                // <p>Sensor: ${product.sensor || 'N/A'}</p>
-                // <p>Current: ${product.current || 'N/A'}</p>
-
-          container.insertAdjacentHTML('beforeend', productCard);
+        const res = await fetch('/api/cart/add', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ product_id, name, price })
         });
 
-
-
-// new code inserted
-document.addEventListener('click', function (e) {
-  const target = e.target.closest('.add-to-cart');
-  if (target) {
-    e.preventDefault();
-    const name = target.getAttribute('data-name');
-    const price = parseFloat(target.getAttribute('data-price'));
-    const imageUrl = target.getAttribute('data-image');
-
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-
-    const existing = cart.find(item => item.name === name);
-    if (existing) {
-      existing.quantity += 1;
-    } else {
-      cart.push({ name, price, imageUrl, quantity: 1 });
-    }
-
-    localStorage.setItem('cart', JSON.stringify(cart));
-    renderCartTable(); // Update the cart display
-  }
-});
-
-
-      } catch (error) {
-        console.error('Error loading products:', error);
+        const data = await res.json();
+        if (res.ok) {
+          alert('Item has been added!');
+          await updateCartUI?.();
+          await renderCartTable?.();
+          await renderCheckoutSummary?.();
+        } else {
+          alert(data.error || 'Failed to add to cart.');
+        }
+      } catch (err) {
+        console.error('Add to cart failed:', err);
+        alert('Network error.');
       }
     }
+  });
 
-    window.addEventListener('DOMContentLoaded', loadProducts);
-  </script>
+  window.addEventListener('DOMContentLoaded', loadProducts);
+</script>
+
 
      <!-- Js Plugins -->
      <script src="js/jquery-3.3.1.min.js"></script>
