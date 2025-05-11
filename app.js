@@ -526,14 +526,14 @@ app.post('/api/checkout/order', async (req, res) => {
       const [orderResult] = await connection.query(
         `INSERT INTO orders (
           first_name,
-          last_name, 
+           
           email, 
           phone, 
           city, 
           notes, 
           total_amount, 
           payment_method
-        ) VALUES (?,?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
           `${firstName} ${lastName}`,
           email,
