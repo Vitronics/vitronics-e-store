@@ -1,3 +1,10 @@
+console.log('Loading cart data...');
+const testResponse = await fetch('/api/cart');
+console.log('Response status:', testResponse.status);
+const testData = await testResponse.json();
+console.log('API response:', testData);
+
+
 document.addEventListener('DOMContentLoaded', function () {
   const cartIcons = document.querySelectorAll('.fa-shopping-cart');
   const clearCartBtn = document.getElementById('clear-cart');
