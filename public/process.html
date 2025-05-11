@@ -232,7 +232,7 @@
   <script>
   async function loadProducts() {
     try {
-      const response = await fetch('/api/upload/plc');
+      const response = await fetch('/api/upload/process');
       const products = await response.json();
       const container = document.getElementById('productsContainer');
       container.innerHTML = '';
