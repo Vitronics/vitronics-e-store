@@ -194,36 +194,30 @@
   </a>
 
   
-   <script>
- document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener('DOMContentLoaded', () => {
   const cartTableBody = document.getElementById('cart-table-body');
   const cartCountEl = document.querySelector('.cart-count');
   const totalPriceEl = document.querySelector('.total-price');
-  const clearCartBtn = document.getElementById('clear-cart');
+  const clearBtn = document.getElementById('clear-cart');
 
-  async function fetchCartData() {
+  async function loadCart() {
     try {
       const res = await fetch('/api/cart');
-      const data = await res.json();
-      return data;
-    } catch (err) {
-      console.error('Fetch cart error:', err);
-      return { items: [], cartCount: 0 };
-    }
-  }
+      const { items, cartCount } = await res.json();
 
-  async function renderCartTable() {
-    const { items, cartCount } = await fetchCartData();
+      cartTableBody.innerHTML = '';
+      let total = 0;
 
-    cartTableBody.innerHTML = '';
-    let totalPrice = 0;
+      if (!items.length) {
+        cartTableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
+        totalPriceEl.textContent = 'Ksh 0.00';
+        cartCountEl.textContent = '0';
+        return;
+      }
 
-    if (items.length === 0) {
-      cartTableBody.innerHTML = '<tr><td colspan="5">Your cart is empty.</td></tr>';
-    } else {
       items.forEach(item => {
-        const subtotal = item.price * item.quantity;
-        totalPrice += subtotal;
+        const subtotal = item.quantity * item.price;
+        total += subtotal;
 
         const row = document.createElement('tr');
         row.innerHTML = `
@@ -231,52 +225,40 @@
           <td>Ksh ${item.price.toFixed(2)}</td>
           <td>${item.quantity}</td>
           <td>Ksh ${subtotal.toFixed(2)}</td>
-          <td>
-            <button class="remove-btn" data-product-id="${item.product_id}">Remove</button>
-          </td>
+          <td><button class="remove-btn" data-id="${item.product_id}">Remove</button></td>
         `;
         cartTableBody.appendChild(row);
       });
+
+      cartCountEl.textContent = cartCount;
+      totalPriceEl.textContent = `Ksh ${total.toFixed(2)}`;
+
+    } catch (err) {
+      console.error('Error loading cart:', err);
+      alert('Failed to load cart.');
     }
-
-    // Update totals
-    cartCountEl.textContent = cartCount;
-    totalPriceEl.textContent = 'Ksh ' + totalPrice.toFixed(2);
-
-    // Attach remove handlers
-    document.querySelectorAll('.remove-btn').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        const productId = btn.dataset.productId;
-        const res = await fetch(`/api/cart/${productId}`, { method: 'DELETE' });
-        const json = await res.json();
-        if (res.ok) {
-          alert(json.message || 'Item removed');
-          await renderCartTable();
-        } else {
-          alert(json.error || 'Failed to remove item');
-        }
-      });
-    });
   }
 
-  // Clear cart
-  clearCartBtn?.addEventListener('click', async () => {
-    if (!confirm('Are you sure you want to clear the cart?')) return;
-    const res = await fetch('/api/cart', { method: 'DELETE' });
-    const json = await res.json();
-    if (res.ok) {
-      alert(json.message);
-      await renderCartTable();
-    } else {
-      alert(json.error || 'Failed to clear cart');
+  // Remove item
+  cartTableBody.addEventListener('click', async e => {
+    if (e.target.classList.contains('remove-btn')) {
+      const id = e.target.dataset.id;
+      await fetch(`/api/cart/${id}`, { method: 'DELETE' });
+      await loadCart();
     }
   });
 
-  // Initial render
-  renderCartTable();
+  // Clear cart
+  clearBtn.addEventListener('click', async () => {
+    if (confirm('Clear all items from the cart?')) {
+      await fetch('/api/cart', { method: 'DELETE' });
+      await loadCart();
+    }
+  });
+
+  loadCart();
 });
 
-   </script>  
 
    <!-- Shoping Cart Section End -->
 
