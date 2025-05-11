@@ -533,7 +533,7 @@ app.post('/api/checkout/order', async (req, res) => {
           notes, 
           total_amount, 
           payment_method
-        ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        ) VALUES (?,?, ?, ?, ?, ?, ?, ?)`,
         [
           `${firstName} ${lastName}`,
           email,
