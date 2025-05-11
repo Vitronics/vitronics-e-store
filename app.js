@@ -535,7 +535,9 @@ app.post('/api/checkout/order', async (req, res) => {
           payment_method
         ) VALUES (?, ?, ?, ?, ?, ?, ?)`,
         [
-          `${firstName} ${lastName}`,
+          firstName,
+            
+          lastName,
           email,
           phone,
           city,
