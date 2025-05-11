@@ -412,7 +412,19 @@ app.get('/api/cart', async (req, res) => {
     }
 });
 
-// Remove item from cart
+// clear item from cart
+app.delete('/api/cart', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM cart_items');
+    res.json({ message: 'All items removed from cart' });
+  } catch (error) {
+    console.error('Clear cart error:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
+
+//Delete cart items
 app.delete('/api/cart/:product_id', async (req, res) => {
     const { product_id } = req.params;
 
