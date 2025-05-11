@@ -353,8 +353,9 @@ app.get('/api/upload/:category', async (req, res) => {
 // ===== CART ENDPOINTS =====
 
 // Add to cart (no user ID)
+// Enhanced Add to Cart endpoint
 app.post('/api/cart/add', async (req, res) => {
-  const { product_id, name, price } = req.body;
+  const { product_id, name, price, quantity = 1 } = req.body;
 
   if (!product_id || !name || !price) {
     return res.status(400).json({ error: 'Missing product_id, name, or price' });
@@ -362,25 +363,31 @@ app.post('/api/cart/add', async (req, res) => {
 
   try {
     const [existing] = await pool.query(
-      'SELECT id FROM cart_items WHERE product_id = ?',
+      'SELECT id, quantity FROM cart_items WHERE product_id = ?',
       [product_id]
     );
 
     if (existing.length > 0) {
-      // Update quantity if product already exists
       await pool.query(
-        'UPDATE cart_items SET quantity = quantity + 1 WHERE product_id = ?',
-        [product_id]
+        'UPDATE cart_items SET quantity = quantity + ? WHERE product_id = ?',
+        [quantity, product_id]
       );
     } else {
-      // Insert new cart item
       await pool.query(
         'INSERT INTO cart_items (product_id, product_name, price, quantity) VALUES (?, ?, ?, ?)',
-        [product_id, name, price, 1]
+        [product_id, name, price, quantity]
       );
     }
 
-    res.status(200).json({ message: 'Product added to cart' });
+    // Get updated cart count
+    const [[{ cartCount }]] = await pool.query(
+      'SELECT SUM(quantity) as cartCount FROM cart_items'
+    );
+
+    res.status(200).json({ 
+      message: 'Product added to cart',
+      cartCount: cartCount || 0
+    });
 
   } catch (err) {
     console.error('Error adding to cart:', err);
@@ -388,9 +395,7 @@ app.post('/api/cart/add', async (req, res) => {
   }
 });
 
-
-
-// Get all items in cart
+// Enhanced Get Cart endpoint with total count
 app.get('/api/cart', async (req, res) => {
     try {
         const [items] = await pool.query(`
@@ -405,38 +410,55 @@ app.get('/api/cart', async (req, res) => {
             JOIN products p ON c.product_id = p.id
         `);
 
-        res.json(items);
+        const [[{ cartCount }]] = await pool.query(
+          'SELECT SUM(quantity) as cartCount FROM cart_items'
+        );
+
+        res.json({
+          items,
+          cartCount: cartCount || 0
+        });
     } catch (error) {
         console.error('Get cart error:', error);
         res.status(500).json({ error: 'Internal server error' });
     }
 });
 
-// clear item from cart
+// Enhanced Clear Cart endpoint
 app.delete('/api/cart', async (req, res) => {
   try {
     await pool.query('DELETE FROM cart_items');
-    res.json({ message: 'All items removed from cart' });
+    res.json({ 
+      message: 'All items removed from cart',
+      cartCount: 0
+    });
   } catch (error) {
     console.error('Clear cart error:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
 
+// Enhanced Remove Item endpoint
+app.delete('/api/cart/:product_id', async (req, res) => {
+    const { product_id } = req.params;
 
-//Delete cart items
-app.delete('/api/cart', async (req, res) => {
-  try {
-    console.log('Attempting to clear cart...'); // Add this
-    const result = await pool.query('DELETE FROM cart_items');
-    console.log('Cart cleared, affected rows:', result.affectedRows); // Add this
-    res.json({ message: 'All items removed from cart' });
-  } catch (error) {
-    console.error('Clear cart error:', error);
-    res.status(500).json({ error: 'Internal server error' });
-  }
+    try {
+        await pool.query('DELETE FROM cart_items WHERE product_id = ?', [product_id]);
+        
+        // Get updated cart count
+        const [[{ cartCount }]] = await pool.query(
+          'SELECT SUM(quantity) as cartCount FROM cart_items'
+        );
+
+        res.json({ 
+          message: 'Item removed from cart',
+          cartCount: cartCount || 0
+        });
+    } catch (error) {
+        console.error('Delete cart item error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
 });
-
 // Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
