@@ -687,6 +687,63 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+
+
+
+  
+            const cartCountEl = document.querySelector('.cart-count');
+            const totalPriceEl = document.querySelector('.total-price');
+
+            // Initialize cart
+            fetchCartItems();
+
+            // Clear cart button
+            clearCartBtn?.addEventListener('click', async () => {
+                if (!confirm('Are you sure you want to clear the cart?')) return;
+                
+                try {
+                    const response = await fetch('/api/cart', { method: 'DELETE' });
+                    
+                    if (response.ok) {
+                        const { cartCount } = await response.json();
+                        updateCartUI([], cartCount);
+                        showToast('Cart cleared successfully');
+                    } else {
+                        const error = await response.json();
+                        throw new Error(error.error || 'Failed to clear cart');
+                    }
+                } catch (error) {
+                    console.error('Clear cart error:', error);
+                    showToast(error.message, 'error');
+                }
+            });
+
+            // Handle quantity changes and remove buttons
+            document.addEventListener('click', async (e) => {
+                if (e.target.classList.contains('remove-btn')) {
+                    await handleRemoveItem(e.target.dataset.id);
+                } else if (e.target.classList.contains('increase-qty')) {
+                    await handleQuantityChange(e.target.dataset.id, 1);
+                } else if (e.target.classList.contains('decrease-qty')) {
+                    await handleQuantityChange(e.target.dataset.id, -1);
+                } else if (e.target.classList.contains('quantity-input')) {
+                    await handleManualQuantityChange(e.target);
+                }
+            });
+
+            // Fetch cart items from server
+            async function fetchCartItems() {
+                try {
+                    const response = await fetch('/api/cart');
+                    if (!response.ok) throw new Error('Failed to fetch cart');
+                    const { items, cartCount } = await response.json();
+                    updateCartUI(items, cartCount);
+                } catch (error) {
+                    console.error('Fetch cart error:', error);
+                    showToast('Failed to load cart', 'error');
+                }
+            }
+
   function updateCartCount(count) {
     document.querySelectorAll('.cart-count').forEach(el => {
       el.textContent = count;
