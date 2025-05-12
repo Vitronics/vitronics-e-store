@@ -144,10 +144,10 @@ ol {
 .section-title h2:after {
 	position: absolute;
 	left: 0;
-	bottom: -15px;
+	bottom: -10px;
 	right: 0;
 	height: 4px;
-	width: 80px;
+	width: 130px;
 	background: #ed1e0c;
 	content: "";
 	margin: 0 auto;
@@ -336,7 +336,7 @@ ol {
 .header__top__right__social a {
 	font-size: 23px;
 	display: inline-block;
-	color: #ced0df;
+	color: #0d28f0;
 	margin-right: 20px;
 }
 
@@ -421,9 +421,12 @@ ol {
 .header__top__right__auth a {
 	display: block;
 	font-size: 23px;
-	color: #edf0f0;
+	color: #ee2610;
 }
 
+.header__top__right__auth a:hover{
+	color: #020cc2;
+}
 .header__top__right__auth a i {
 	margin-right: 6px;
 
@@ -431,8 +434,8 @@ ol {
 
 .header__logo {
 	padding: 15px 0;
-	width: 150px;
-	height: 150px;
+	width: 100px;
+	height: 100px;
 	margin-bottom: 10px;
 }
 
@@ -1715,7 +1718,7 @@ height: 20px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 30vh;
+  /* height: 30vh; */
 }
 
 .featured__item:hover {
@@ -1729,16 +1732,16 @@ height: 20px;
 /* Product image container */
 .featured__item__pic {
   position: relative;
-  margin: 10px; /* Add margin around the image */
+  margin: 10px; 
   overflow: hidden;
-  height: 140px; /* Minimized height */
+  height: 140px; 
 }
 
-/* Ensure image fits with margin and proper aspect ratio */
+
 .featured__item__pic::before {
   content: '';
   display: block;
-  padding-top: 50%; /* Aspect ratio of 4:3 (you can change this if needed) */
+  padding-top: 50%; 
 }
 
 .featured__item__pic img {
@@ -1747,7 +1750,7 @@ height: 20px;
   left: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover; /* Ensures the image covers the container and respects its aspect ratio */
+  object-fit: cover; 
   border-radius: 10px;
 }
 
@@ -1805,11 +1808,16 @@ height: 20px;
 .featured__item__text {
   text-align: center;
   padding: 15px 10px;
+  
+} 
+.featured__item__text  a:hover {
+ color: #020cc2;
+
 }
 
 .featured__item__text h5 {
   font-size: 1rem;
-  color: #252525;
+  color: #e74e4e;
   font-weight: 700;
   margin-bottom: 8px;
 }
@@ -3290,7 +3298,7 @@ height: 20px;
 	.humberger__menu__widget {
 		margin-bottom: 20px;
 	}
-	.humberger__menu__widget .header__top__right__language {
+	.humberger__menu__widget  {
 		margin-right: 20px;
 	}
 	.humberger__menu__nav {
@@ -3548,7 +3556,7 @@ height: 20px;
 	.humberger__menu__widget {
 		margin-bottom: 20px;
 	}
-	.humberger__menu__widget .header__top__right__language {
+	.humberger__menu__widget{
 		margin-right: 20px;
 	}
 	.humberger__menu__nav {

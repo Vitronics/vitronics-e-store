@@ -25,9 +25,9 @@
 
 <body>
     <!-- Page Preloder -->
-    <div id="preloder">
+    <!-- <div id="preloder">
         <div class="loader"></div>
-    </div>
+    </div> -->
  <!-- Humberger Begin -->
  <div class="humberger__menu__overlay"></div>
  <div class="humberger__menu__wrapper">
@@ -48,18 +48,30 @@
          <div class="header__top__right__auth">
          <a href="login.html"><i class="fa fa-user"></i> Login</a>
          </div>
+          <div class="hero__search__form">
+                            <form action="#">
+                                <!--<div class="hero__search__categories">
+                                    All Categories
+                                    <span class="arrow_carrot-down"></span>
+                                </div>-->
+                                <input type="text" placeholder="Search store">
+                                <button type="submit" class="site-btn">SEARCH</button>
+                            </form>
+                        </div>
      </div>
      <nav class="humberger__menu__nav mobile-menu">
          <ul>
-             <li class="act'ive"><a href="./index.html">Home</a></li>
+             <li class="active"><a href="./index.html">Home</a></li>
              <li><a href="./shop-grid.html">Shop</a></li>
-             <li><a href="#">Pages</a>
+              <li><a href="./shopping-cart.html">Shoping Cart</a></li>
+              <li><a href="./checkout.html">Check Out</a></li>
+             <!-- <li><a href="#">Pages</a>
                  <ul class="header__menu__dropdown">
                      <li><a href="./shop-details.html">Shop Details</a></li>
                      <li><a href="./shopping-cart.html">Shoping Cart</a></li>
                      
                  </ul>
-             </li>
+             </li> -->
             
              <li><a href="./contact.html">Contact</a></li>
          </ul>
@@ -86,7 +98,9 @@
                 <div class="row">
                     <div class="col-lg-6 col-md-6">
                         <div class="header__top__left">
+                            
                             <ul>
+                                
                                  <a href="Vitronicstech@gmail.com"><li><i class="fa fa-envelope"></i> Vitronicstech@gmail.com</li>
                                
                             </ul>
@@ -121,13 +135,15 @@
                         <ul>
                             <li class="active"><a href="./index.html">Home</a></li>
                             <li><a href="./shop-grid.html">Shop</a></li>
-                            <li><a href="#">Pages</a>
-                                <ul class="header__menu__dropdown">
-                                    <li><a href="shop-details.html">Shop Details</a></li>
-                                    <li><a href="shopping-cart.html">Shopping Cart</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                </ul>
-                            </li>
+                            <li><a href="./shopping-cart.html">Shopping Cart</a></li>
+                           <li><a href="#">Check Out</a></li>
+             <!-- <li><a href="#">Pages</a>
+                 <ul class="header__menu__dropdown">
+                     <li><a href="./shop-details.html">Shop Details</a></li>
+                     <li><a href="./shopping-cart.html">Shoping Cart</a></li>
+                     
+                 </ul>
+             </li> -->
                            
                             <li><a href="./contact.html">Contact</a></li>
                         </ul>
@@ -282,7 +298,7 @@
                 </div>
             </div>
             <div class="row featured__filter">
-                <div class="col-lg-2 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
                     <div class="featured__item" data-name="Relays" data-price="4500" >
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Relays.png">
                             <ul class="featured__item__pic__hover">
@@ -298,7 +314,7 @@
                     </div>
                 </div>
                 
-                <div class="col-lg-2 col-md-4 col-sm-6 mix Pneumatics " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix Pneumatics " style="margin:5px auto">
                     <div class="featured__item" data-name="Pneumatics" data-price="3000">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Pneumatics.jpg">
                             <ul class="featured__item__pic__hover">
@@ -307,13 +323,13 @@
                                 <li><a href=""><i class="fa fa-shopping-cart"></i></a></li>
                             </ul>
                         </div>
-                        <div class="featured__item__text">
+                        <div class="featured_text">
                             <h6><a href="pneumatic.html">Pneumatics</a></h6>
                             <h5>Ksh 3,000</h5>
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix Pneumatics " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix Pneumatics " style="margin:5px auto">
                     <div class="featured__item" data-name="Pneumatics manual valves" data-price="1500">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Pnuematic-manual-valve.jpg">
                             <ul class="featured__item__pic__hover">
@@ -328,7 +344,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix Pneumatics "  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix Pneumatics "  style="margin:5px auto">
                     <div class="featured__item" data-name="Solenoid valve" data-price="2500">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Solenoid-valves.jpg">
                             <ul class="featured__item__pic__hover">
@@ -343,7 +359,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  switches" style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  switches" style="margin:5px auto">
                     <div class="featured__item" data-name="Changeover Selector Switch 20A 3 Positions" data-price="4000">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/ChangeOver20A.jpg">
                             <ul class="featured__item__pic__hover">
@@ -358,7 +374,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  relays"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  relays"  style="margin:5px auto">
                     <div class="featured__item" data-name="Phase Failure relays" data-price="3500">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/phase_relays.jpg">
                             <ul class="featured__item__pic__hover">
@@ -373,7 +389,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  relays"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  relays"  style="margin:5px auto">
                     <div class="featured__item" data-name="Phoenix Contact relays" data-price="1500">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Phoenix_Relay.jpg">
                             <ul class="featured__item__pic__hover">
@@ -388,7 +404,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix switches " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix switches " style="margin:5px auto">
                     <div class="featured__item" data-name="Selector Switch" data-price="850">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Selector_Switch.jpg">
                             <ul class="featured__item__pic__hover">
@@ -403,7 +419,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
                     <div class="featured__item" data-name="Safety Relays" data-price="8600">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Pilz.jpg">
                             <ul class="featured__item__pic__hover">
@@ -418,7 +434,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix relays " style="margin:5px auto">
                     <div class="featured__item" data-name="Solid State Relay" data-price="5600">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Solid_state_Relay.jpg">
                             <ul class="featured__item__pic__hover">
@@ -433,7 +449,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix switches"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix switches"  style="margin:5px auto">
                     <div class="featured__item" data-name="Rotary Switch" data-price="3000">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Rotary_Switch.jpg">
                             <ul class="featured__item__pic__hover">
@@ -449,7 +465,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  switches"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  switches"  style="margin:5px auto">
                     <div class="featured__item" data-name="Push Buttons" data-price="600">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Push_Button.jpg">
                             <ul class="featured__item__pic__hover">
@@ -465,7 +481,7 @@
                     </div>
                 </div>
 
-                <div class="col-lg-2 col-md-4 col-sm-6 mix switches"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix switches"  style="margin:5px auto">
                     <div class="featured__item" data-name="Emergency Switches" data-price="600">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Emergency_Switch.jpg">
                             <ul class="featured__item__pic__hover">
@@ -496,7 +512,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  Embeded"  style="margin:5px auto">
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  Embeded"  style="margin:5px auto">
                     <div class="featured__item" data-name="Raspberry-pi" data-price="4000">
                         <div class="featured__item__pic set-bg" data-setbg="img/featured/Raspberry-pi.jpg">
                             <ul class="featured__item__pic__hover">
@@ -511,7 +527,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 mix  Embeded"  style="margin:5px auto"> 
+                <div class="col-lg-3 col-md-4 col-sm-6 mix  Embeded"  style="margin:5px auto"> 
                     <div class="featured__item" data-name="Raspberry-pi" data-price="4000">
                         
                             <div class="featured__item__pic set-bg" data-setbg="img/latest-product/Arduino-Mega-2560.jpg"> 
