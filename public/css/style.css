@@ -421,7 +421,7 @@ ol {
 .header__top__right__auth a {
 	display: block;
 	font-size: 23px;
-	color: #ee2610;
+	color: #e4dedd;
 }
 
 .header__top__right__auth a:hover{
@@ -1700,7 +1700,7 @@ height: 20px;
     } */
    #productsContainer {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 1rem;
   margin-top: 1rem;
   padding: 1rem;
@@ -1837,7 +1837,7 @@ height: 20px;
 /* Responsive */
 @media (max-width: 600px) {
   #productsContainer {
-    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    grid-template-columns: repeat(4, 1fr);
   }
 
   .featured__item__pic {
@@ -3682,4 +3682,98 @@ height: 20px;
 	.blog__details__hero__text h2 {
 		font-size: 24px;
 	}
+}
+
+
+
+
+.row.featured__filter {
+  margin-left: 5px;
+  margin-right: 5px;
+}
+.row.featured__filter > [class*="col-"] {
+  padding-left: 5px;
+  padding-right: 5px;
+  margin-bottom: 10px;
+}
+
+
+/* globally limit the featured item’s overall height */
+.featured__item {
+  display: flex;
+  flex-direction: column;
+  height: 180px; 
+  width: 150px;       /* pick your desired total card height */
+  overflow: hidden;
+}
+
+/* make the image area flex-shrink and cap its height */
+.featured__item__pic {
+  flex: 0 0 auto;
+  width: 100%;
+  height: 100px;        /* adjust as needed */
+  /* background-size: cover !important;
+  background-position: center !important; */
+}
+
+/* let the text area fill remaining space, but limit padding */
+.featured__item__text {
+  flex: 1 1 auto;
+  padding: 2px 4px;     /* tighter padding */
+  overflow: hidden;
+}
+
+/* Optional: smaller fonts on really small screens */
+@media (max-width: 576px) {
+  .featured__item {
+    height: 180px;
+	
+  }
+  .featured__item__pic {
+    height: 100px;
+  }
+  .featured__item__text h6 {
+    font-size: 0.85rem;
+    line-height: 1.1;
+  }
+  .featured__item__text h5 {
+    font-size: 0.9rem;
+  }
+}
+
+
+
+.featured__item__pic {
+       /* for absolute children */
+  /* width: 100%; */
+         /* 1:1 aspect ratio; change to 75% for 4:3, etc */
+  /* background-size: cover !important; */
+  background-position: center !important;
+  overflow: hidden;          /* 2. hide any overflow */
+}
+
+/* 3. Position the hover icons inside that box */
+/* .featured__item__pic__hover {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+} */
+
+/* Make sure the <ul> sits on top of the bg image */
+
+
+/* Optional: Shrink the gap between grid items on xs */
+@media (max-width: 576px) {
+  .row.featured__filter {
+    gap: 4px;
+  }
+}
+
+@media (max-width: 728px) {
+  .row.featured__filter {
+    gap: 4px;
+  }
 }
