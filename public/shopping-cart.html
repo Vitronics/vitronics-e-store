@@ -8,7 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Vitronics | Technologies</title>
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
 
@@ -23,7 +23,7 @@
     <link rel="stylesheet" href="./css/style.css" type="text/css">
 
        <style>
-           body { font-family: Arial, sans-serif; padding: 20px; }
+           /* body { font-family: Arial, sans-serif; padding: 20px; } */
            table { width: 75%;  border-collapse: collapse; margin: 20px auto; }
            th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
            th { background-color: #f4f4f4; }
@@ -125,13 +125,13 @@
                         <a href="./index.html"><img src="img/Vitronicstech_logo5.png" alt="company logo"></a>
                     </div>
                 </div>
-                <div class="col-lg-6">
+                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
                             <li class="active"><a href="./index.html">Home</a></li>
                             <li><a href="./shop-grid.html">Shop</a></li>
-                               <li><a href="./shopping-cart.html">Shopping Cart</a></li>
-             <li><a href="./checkout.html">Check Out</a></li>
+                            <li><a href="./shopping-cart.html">Shopping Cart</a></li>
+                           <li><a href="./checkout.html">Check Out</a></li>
              <!-- <li><a href="#">Pages</a>
                  <ul class="header__menu__dropdown">
                      <li><a href="./shop-details.html">Shop Details</a></li>
@@ -144,7 +144,17 @@
                         </ul>
                     </nav>
                 </div>
-                <!--  -->
+                      <div class="col-lg-3">
+                    <div class="header__cart">
+                        <ul>
+                            <li><a href=""><i class="fa fa-heart"></i> <span class="wishlist-count">0</span></a></li>
+                            <li><a href="./shopping-cart.html"><i class="fa fa-shopping-cart"></i> <span class="cart-count">0</span></a></li>
+                            
+                        </ul>
+                        <!-- <div class="header__cart__price">Total: <span id="total-price">ksh 0.00</span></div> -->
+                        <!-- <button id="clear-cart" >Clear Cart</button> -->
+                    </div>
+                </div>
             </div>
             <div class="humberger__open">
                 <i class="fa fa-bars"></i>
