@@ -1518,15 +1518,7 @@ height: 20px;
 	margin-right: 0;
 }
 /* product upload css */
- /* body {
-      font-family: 'Segoe UI', sans-serif;
-      background: #f4f4f4;
-      padding: 2rem;
-    }
-    h1 {
-      color: #2d3748;
-      text-align: center;
-    } */
+
    #productsContainer {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -1542,7 +1534,7 @@ height: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: transform 0.3s ease;
-  margin-bottom: 10px;
+  margin-bottom: 30px;
  
   text-align: center;
   display: flex;
@@ -3004,12 +2996,12 @@ height: 20px;
 }
 
 
-/* globally limit the featured item’s overall height */
+
 .featured__item {
   display: flex;
   flex-direction: column;
   height: 180px; 
-  width: 150px;       /* pick your desired total card height */
+  width: 150px;       
   overflow: hidden;
 }
 
@@ -3041,38 +3033,3 @@ height: 20px;
 }
 
 
-
-.featured__item__pic {
-       /* for absolute children */
-  /* width: 100%; */
-         /* 1:1 aspect ratio; change to 75% for 4:3, etc */
-  /* background-size: cover !important; */
-  background-position: center !important;
-  overflow: hidden;          /* 2. hide any overflow */
-}
-
-/* 3. Position the hover icons inside that box */
-/* .featured__item__pic__hover {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  display: flex;
-  gap: 6px;
-  z-index: 2;
-} */
-
-/* Make sure the <ul> sits on top of the bg image */
-
-
-/* Optional: Shrink the gap between grid items on xs */
-@media (max-width: 576px) {
-  .row.featured__filter {
-    gap: 4px;
-  }
-}
-
-@media (max-width: 728px) {
-  .row.featured__filter {
-    gap: 4px;
-  }
-}
