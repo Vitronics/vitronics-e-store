@@ -1529,18 +1529,6 @@ height: 20px;
 /* featured product image css */
 
 
-
-.featured__item__pic img {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%; /* Fill container */
-  object-fit: cover;
-  border-radius: 10px;
-}
-
-
 /* Main card */
 .featured__item {
   background: #ffffff;
@@ -3034,6 +3022,5 @@ height: 20px;
     font-size: 0.9rem;
   }
 }
-
 
 
