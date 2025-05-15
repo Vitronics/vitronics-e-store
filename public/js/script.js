@@ -200,9 +200,6 @@
 
 document.addEventListener('DOMContentLoaded', async function () {
   const cartTableBody = document.getElementById('cart-table-body');
-  const cartCount = document.querySelectorAll('.cart-count');
-  const totalPriceEl = document.querySelectorAll('.total-price');
-document.getElementById('header-cart-count').textContent = cartCount || 0;
 
   try {
     const cartData = await fetchCartData();
@@ -240,17 +237,19 @@ document.getElementById('header-cart-count').textContent = cartCount || 0;
   function renderCartTable(items, cartCount) {
     cartTableBody.innerHTML = '';
 
-    // if (cartCountEl) cartCountEl.textContent = cartCount || 0;
-    cartCount.forEach(el => {
-  el.textContent = cartCount || 0;
-});
-
+    // Update ALL cart count elements
+    document.querySelectorAll('.cart-count').forEach(el => {
+      el.textContent = cartCount || 0;
+    });
 
     let totalPrice = 0;
 
     if (!items || items.length === 0) {
       cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Your cart is empty</td></tr>';
-      if (totalPriceEl) totalPriceEl.textContent = 'Ksh 0.00';
+      // Update ALL total price elements
+      document.querySelectorAll('.total-price').forEach(el => {
+        el.textContent = 'Ksh 0.00';
+      });
       return;
     }
 
@@ -284,7 +283,10 @@ document.getElementById('header-cart-count').textContent = cartCount || 0;
       cartTableBody.appendChild(row);
     });
 
-    if (totalPriceEl) totalPriceEl.textContent = `Ksh ${totalPrice.toFixed(2)}`;
+    // Update ALL total price elements
+    document.querySelectorAll('.total-price').forEach(el => {
+      el.textContent = `Ksh ${totalPrice.toFixed(2)}`;
+    });
   }
 
   function setupCartEventListeners() {
