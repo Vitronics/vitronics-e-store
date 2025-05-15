@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', async function() {
   const cartTableBody = document.getElementById('cart-table-body');
-  const cartCountEl = document.querySelector('.cart-count');
-  const totalPriceEl = document.querySelector('.total-price');
+  const cartCountEl = document.querySelectorAll('.cart-count');
+  const totalPriceEl = document.querySelectorAll('.total-price');
 
   try {
     // Load initial cart data
@@ -19,16 +19,15 @@ document.addEventListener('DOMContentLoaded', async function() {
   async function fetchCartData() {
     try {
       const response = await fetch('/api/cart');
-      
-      // Check if response is OK (status 200-299)
+    
       if (!response.ok) {
-        // Try to get error details from response
+        
         let errorMsg = `HTTP error! status: ${response.status}`;
         try {
           const errorData = await response.json();
           errorMsg = errorData.error || errorData.message || errorMsg;
         } catch (e) {
-          // If we can't parse JSON error, use the text
+         
           const text = await response.text();
           if (text) errorMsg = text;
         }
