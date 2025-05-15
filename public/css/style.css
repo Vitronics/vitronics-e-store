@@ -1526,22 +1526,38 @@ height: 20px;
   margin-top: 1rem;
   padding: 1rem;
 }
+/* featured product image css */
+
+.featured{
+ background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  margin-bottom: 30px;
+ gap:10px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
 
 /* Main card */
-.featured__item {
+/* .featured__item {
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   overflow: hidden;
   transition: transform 0.3s ease;
   margin-bottom: 30px;
- 
+ gap:10px;
   text-align: center;
   display: flex;
   flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-around; */
   /* height: 30vh; */
-}
+/* } */
 
 .featured__item:hover {
   transform: scale(1.03);
