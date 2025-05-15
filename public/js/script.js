@@ -200,8 +200,8 @@
 
 document.addEventListener('DOMContentLoaded', async function () {
   const cartTableBody = document.getElementById('cart-table-body');
-  const cartCountEl = document.querySelector('.cart-count');
-  const totalPriceEl = document.querySelector('.total-price');
+  const cartCountEl = document.querySelectorAll('.cart-count');
+  const totalPriceEl = document.querySelectorAll('.total-price');
 
   try {
     const cartData = await fetchCartData();
