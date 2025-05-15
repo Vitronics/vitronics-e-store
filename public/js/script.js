@@ -200,8 +200,9 @@
 
 document.addEventListener('DOMContentLoaded', async function () {
   const cartTableBody = document.getElementById('cart-table-body');
-  const cartCountEl = document.querySelectorAll('.cart-count');
+  const cartCount = document.querySelectorAll('.cart-count');
   const totalPriceEl = document.querySelectorAll('.total-price');
+document.getElementById('header-cart-count').textContent = cartCount || 0;
 
   try {
     const cartData = await fetchCartData();
@@ -239,7 +240,11 @@ document.addEventListener('DOMContentLoaded', async function () {
   function renderCartTable(items, cartCount) {
     cartTableBody.innerHTML = '';
 
-    if (cartCountEl) cartCountEl.textContent = cartCount || 0;
+    // if (cartCountEl) cartCountEl.textContent = cartCount || 0;
+    cartCount.forEach(el => {
+  el.textContent = cartCount || 0;
+});
+
 
     let totalPrice = 0;
 
