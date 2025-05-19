@@ -670,202 +670,365 @@
 
 
 document.addEventListener('DOMContentLoaded', async function () {
-  // Initialize cart elements
+  // DOM Elements
   const cartTableBody = document.getElementById('cart-table-body');
-  const cartCountElements = document.querySelectorAll('.cart-count');
-  const totalPriceElements = document.querySelectorAll('.total-price');
+  const checkoutBtn = document.getElementById('checkout-btn');
+  const emptyCartMessage = `
+    <tr>
+      <td colspan="5" class="text-center py-5">
+        <div class="empty-cart-container">
+          <i class="fas fa-shopping-cart fa-4x mb-4 text-muted"></i>
+          <h4 class="text-muted mb-3">Your cart is empty</h4>
+          <a href="/products" class="btn btn-primary btn-lg">
+            <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
+          </a>
+        </div>
+      </td>
+    </tr>
+  `;
 
-  if (!cartTableBody) {
-    console.error('Cart table body not found');
-    return;
-  }
-
-  // Load initial cart data
+  // Initialize cart
   try {
     const cartData = await fetchCartData();
-    renderCart(cartData);
-    setupEventListeners();
+    renderCartTable(cartData.items, cartData.cartCount);
+    setupCartEventListeners();
+    if (checkoutBtn) {
+      checkoutBtn.disabled = cartData.items.length === 0;
+    }
   } catch (error) {
-    console.error('Failed to load cart:', error);
-    renderCart({ items: [], cartCount: 0 });
-    showToast('Failed to load cart. Please refresh.', 'error');
+    console.error('Initial cart load failed:', error);
+    renderCartTable([], 0);
+    showToast('Failed to load cart. Please refresh the page.', 'error');
   }
 
   // Fetch cart data from server
   async function fetchCartData() {
-    const response = await fetch('/api/cart', {
-      headers: { 'Accept': 'application/json' }
-    });
-    
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Failed to fetch cart');
-    }
-    
-    return await response.json();
-  }
+    try {
+      const response = await fetch('/api/cart', {
+        headers: {
+          'Accept': 'application/json',
+          'Cache-Control': 'no-cache'
+        }
+      });
 
-  // Render entire cart
-  function renderCart(cartData) {
-    renderCartTable(cartData.items);
-    updateCartCount(cartData.cartCount);
-    updateTotalPrice(calculateTotal(cartData.items));
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to fetch cart data');
+      }
+
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      throw error;
+    }
   }
 
   // Render cart table
-  function renderCartTable(items) {
-    cartTableBody.innerHTML = items.length ? '' : `
-      <tr>
-        <td colspan="5" class="text-center py-4">
-          <i class="fa fa-shopping-cart fa-2x mb-2"></i>
-          <p>Your cart is empty</p>
-          <a href="/products" class="btn btn-primary">Shop Now</a>
-        </td>
-      </tr>
-    `;
+  function renderCartTable(items, cartCount) {
+    // Update cart count indicators
+    document.querySelectorAll('.cart-count').forEach(el => {
+      el.textContent = cartCount || 0;
+      el.classList.toggle('d-none', cartCount === 0);
+    });
+
+    // Handle empty cart
+    if (!items || items.length === 0) {
+      cartTableBody.innerHTML = emptyCartMessage;
+      updateTotalPrice(0);
+      if (checkoutBtn) checkoutBtn.disabled = true;
+      return;
+    }
+
+    // Build cart items
+    cartTableBody.innerHTML = '';
+    let totalPrice = 0;
 
     items.forEach(item => {
-      const subtotal = item.quantity * item.price;
+      const subtotal = item.quantity * parseFloat(item.price);
+      totalPrice += subtotal;
+
       const row = document.createElement('tr');
+      row.className = 'cart-item';
       row.innerHTML = `
         <td class="align-middle">
           <div class="d-flex align-items-center">
-            <img src="${item.image || '/images/placeholder.png'}" 
-                 alt="${item.name}" width="60" class="mr-3 rounded">
+            <img src="${item.product_image || '/images/placeholder-product.png'}" 
+                 alt="${item.product_name}" 
+                 class="cart-item-image rounded mr-3">
             <div>
-              <h6 class="mb-0">${item.name}</h6>
-              ${item.variant ? `<small class="text-muted">${item.variant}</small>` : ''}
+              <h6 class="mb-1">${item.product_name}</h6>
+              ${item.variation ? `<small class="text-muted">${item.variation}</small>` : ''}
             </div>
           </div>
         </td>
-        <td class="align-middle">$${item.price.toFixed(2)}</td>
+        <td class="align-middle price-cell">Ksh ${parseFloat(item.price).toFixed(2)}</td>
         <td class="align-middle">
-          <div class="d-flex align-items-center">
-            <button class="btn btn-sm btn-outline-secondary decrease" 
-                    data-id="${item.id}" ${item.quantity <= 1 ? 'disabled' : ''}>
-              −
+          <div class="d-flex align-items-center quantity-controls">
+            <button class="btn btn-outline-secondary decrease-qty" 
+                    data-id="${item.product_id}"
+                    ${item.quantity <= 1 ? 'disabled' : ''}>
+              <i class="fas fa-minus"></i>
             </button>
-            <input type="number" class="form-control mx-2 text-center quantity" 
-                   value="${item.quantity}" min="1" max="99" 
-                   data-id="${item.id}" style="width:60px;">
-            <button class="btn btn-sm btn-outline-secondary increase" 
-                    data-id="${item.id}">
-              +
+            <input type="number" 
+                   class="form-control quantity-input mx-2 text-center" 
+                   data-id="${item.product_id}" 
+                   value="${item.quantity}" 
+                   min="1" max="99">
+            <button class="btn btn-outline-secondary increase-qty" 
+                    data-id="${item.product_id}">
+              <i class="fas fa-plus"></i>
             </button>
           </div>
         </td>
-        <td class="align-middle">$${subtotal.toFixed(2)}</td>
+        <td class="align-middle price-cell">Ksh ${subtotal.toFixed(2)}</td>
         <td class="align-middle">
-          <button class="btn btn-sm btn-outline-danger remove" 
-                  data-id="${item.id}" title="Remove">
-            <i class="fa fa-trash"></i>
+          <button class="btn btn-outline-danger remove-btn" 
+                  data-id="${item.product_id}"
+                  title="Remove item">
+            <i class="fas fa-trash-alt"></i>
           </button>
         </td>
       `;
       cartTableBody.appendChild(row);
     });
-  }
 
-  // Update cart count display
-  function updateCartCount(count) {
-    cartCountElements.forEach(el => {
-      el.textContent = count;
-      el.classList.toggle('d-none', count === 0);
-    });
-  }
-
-  // Calculate cart total
-  function calculateTotal(items) {
-    return items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    updateTotalPrice(totalPrice);
+    if (checkoutBtn) checkoutBtn.disabled = false;
   }
 
   // Update total price display
   function updateTotalPrice(total) {
-    totalPriceElements.forEach(el => {
-      el.textContent = `$${total.toFixed(2)}`;
+    document.querySelectorAll('.total-price').forEach(el => {
+      el.textContent = `Ksh ${total.toFixed(2)}`;
     });
   }
 
   // Setup event listeners
-  function setupEventListeners() {
+  function setupCartEventListeners() {
+    // Event delegation for cart actions
     document.addEventListener('click', async (e) => {
       try {
-        if (e.target.closest('.remove')) {
-          await removeItem(e.target.closest('.remove').dataset.id);
-        } else if (e.target.closest('.increase')) {
-          await updateQuantity(e.target.closest('.increase').dataset.id, 1);
-        } else if (e.target.closest('.decrease')) {
-          await updateQuantity(e.target.closest('.decrease').dataset.id, -1);
+        if (e.target.closest('.remove-btn')) {
+          const btn = e.target.closest('.remove-btn');
+          await removeItem(btn.dataset.id);
+        } else if (e.target.closest('.increase-qty')) {
+          const btn = e.target.closest('.increase-qty');
+          await updateQuantity(btn.dataset.id, 1);
+        } else if (e.target.closest('.decrease-qty')) {
+          const btn = e.target.closest('.decrease-qty');
+          await updateQuantity(btn.dataset.id, -1);
         }
       } catch (error) {
         showToast(error.message, 'error');
       }
     });
 
+    // Handle manual quantity input
     cartTableBody.addEventListener('change', async (e) => {
-      if (e.target.classList.contains('quantity')) {
+      if (e.target.classList.contains('quantity-input')) {
         try {
           const input = e.target;
+          const productId = input.dataset.id;
           const newQty = Math.max(1, Math.min(99, parseInt(input.value) || 1));
-          await updateQuantity(input.dataset.id, newQty, true);
+          await updateQuantity(productId, newQty, true);
         } catch (error) {
           showToast('Please enter a valid quantity (1-99)', 'error');
         }
       }
     });
+
+    // Add loading state to checkout button
+    if (checkoutBtn) {
+      checkoutBtn.addEventListener('click', function() {
+        this.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Processing...';
+      });
+    }
   }
 
   // Update item quantity
   async function updateQuantity(productId, change, isAbsolute = false) {
-    const response = await fetch(`/api/cart/${productId}`, {
-      method: 'PATCH',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(isAbsolute 
-        ? { quantity: change } 
-        : { change: change }
-      )
-    });
+    try {
+      const body = isAbsolute
+        ? { quantity: change }
+        : { quantity_change: change };
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Update failed');
+      const response = await fetch(`/api/cart/${productId}`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to update quantity');
+      }
+
+      const updatedCart = await fetchCartData();
+      renderCartTable(updatedCart.items, updatedCart.cartCount);
+      showToast('Cart updated');
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      showToast(error.message, 'error');
+      // Refresh cart to ensure UI consistency
+      try {
+        const updatedCart = await fetchCartData();
+        renderCartTable(updatedCart.items, updatedCart.cartCount);
+      } catch (fetchError) {
+        console.error('Failed to refresh cart:', fetchError);
+      }
     }
-
-    const cartData = await fetchCartData();
-    renderCart(cartData);
-    showToast('Cart updated');
   }
 
   // Remove item from cart
   async function removeItem(productId) {
-    const response = await fetch(`/api/cart/${productId}`, {
-      method: 'DELETE'
-    });
+    try {
+      if (!confirm('Are you sure you want to remove this item from your cart?')) {
+        return;
+      }
 
-    if (!response.ok) {
-      const error = await response.json().catch(() => ({}));
-      throw new Error(error.message || 'Removal failed');
+      const response = await fetch(`/api/cart/${productId}`, {
+        method: 'DELETE',
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) {
+        const error = await response.json().catch(() => ({}));
+        throw new Error(error.message || 'Failed to remove item');
+      }
+
+      const updatedCart = await fetchCartData();
+      renderCartTable(updatedCart.items, updatedCart.cartCount);
+      showToast('Item removed from cart');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      showToast(error.message, 'error');
     }
-
-    const cartData = await fetchCartData();
-    renderCart(cartData);
-    showToast('Item removed');
   }
 
   // Show toast notification
   function showToast(message, type = 'success') {
+    // Remove existing toasts
+    document.querySelectorAll('.toast-notification').forEach(el => el.remove());
+    
     const toast = document.createElement('div');
-    toast.className = `toast ${type}`;
+    toast.className = `toast-notification ${type}`;
     toast.innerHTML = `
-      <i class="fa ${type === 'success' ? 'fa-check' : 'fa-exclamation'}"></i>
-      ${message}
+      <div class="toast-icon">
+        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+      </div>
+      <div class="toast-message">${message}</div>
+      <button class="toast-close">&times;</button>
     `;
+    
     document.body.appendChild(toast);
     
-    setTimeout(() => toast.classList.add('show'), 100);
-    setTimeout(() => {
+    // Show toast
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    // Auto-hide after 3 seconds
+    const autoHide = setTimeout(() => {
       toast.classList.remove('show');
       setTimeout(() => toast.remove(), 300);
     }, 3000);
+    
+    // Manual close
+    toast.querySelector('.toast-close').addEventListener('click', () => {
+      clearTimeout(autoHide);
+      toast.classList.remove('show');
+      setTimeout(() => toast.remove(), 300);
+    });
+  }
+
+  // Add styles if not already present
+  if (!document.getElementById('cart-styles')) {
+    const style = document.createElement('style');
+    style.id = 'cart-styles';
+    style.textContent = `
+      /* Cart table styles */
+      .cart-item-image {
+        width: 70px;
+        height: 70px;
+        object-fit: cover;
+      }
+      
+      .quantity-controls .btn {
+        width: 38px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      
+      .quantity-input {
+        width: 60px;
+        height: 38px;
+      }
+      
+      .price-cell {
+        font-weight: 500;
+        white-space: nowrap;
+      }
+      
+      /* Empty cart styles */
+      .empty-cart-container {
+        max-width: 400px;
+        margin: 0 auto;
+        text-align: center;
+      }
+      
+      /* Toast notifications */
+      .toast-notification {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #333;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 6px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 1000;
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+      
+      .toast-notification.success {
+        background: #28a745;
+      }
+      
+      .toast-notification.error {
+        background: #dc3545;
+      }
+      
+      .toast-notification.show {
+        opacity: 1;
+        bottom: 30px;
+      }
+      
+      .toast-icon {
+        margin-right: 12px;
+        font-size: 1.2rem;
+      }
+      
+      .toast-message {
+        margin-right: 12px;
+      }
+      
+      .toast-close {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        padding: 0 0 0 12px;
+      }
+    `;
+    document.head.appendChild(style);
   }
 });
