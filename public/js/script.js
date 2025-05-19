@@ -198,212 +198,212 @@
 
 
 
-// document.addEventListener('DOMContentLoaded', async function () {
-//   const cartTableBody = document.getElementById('cart-table-body');
+document.addEventListener('DOMContentLoaded', async function () {
+  const cartTableBody = document.getElementById('cart-table-body');
 
-//   try {
-//     const cartData = await fetchCartData();
-//     renderCartTable(cartData.items, cartData.cartCount);
-//     setupCartEventListeners();
-//   } catch (error) {
-//     console.error('Initial cart load failed:', error);
-//     renderCartTable([], 0);
-//     showToast('Failed to load cart. Please refresh the page.', 'error');
-//   }
+  try {
+    const cartData = await fetchCartData();
+    renderCartTable(cartData.items, cartData.cartCount);
+    setupCartEventListeners();
+  } catch (error) {
+    console.error('Initial cart load failed:', error);
+    renderCartTable([], 0);
+    showToast('Failed to load cart. Please refresh the page.', 'error');
+  }
 
-//   async function fetchCartData() {
-//     try {
-//       const response = await fetch('/api/cart');
+  async function fetchCartData() {
+    try {
+      const response = await fetch('/api/cart');
 
-//       if (!response.ok) {
-//         let errorMsg = `HTTP error! status: ${response.status}`;
-//         try {
-//           const errorData = await response.json();
-//           errorMsg = errorData.error || errorData.message || errorMsg;
-//         } catch (e) {
-//           const text = await response.text();
-//           if (text) errorMsg = text;
-//         }
-//         throw new Error(errorMsg);
-//       }
+      if (!response.ok) {
+        let errorMsg = `HTTP error! status: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMsg = errorData.error || errorData.message || errorMsg;
+        } catch (e) {
+          const text = await response.text();
+          if (text) errorMsg = text;
+        }
+        throw new Error(errorMsg);
+      }
 
-//       return await response.json();
-//     } catch (error) {
-//       console.error('Error fetching cart:', error);
-//       throw error;
-//     }
-//   }
+      return await response.json();
+    } catch (error) {
+      console.error('Error fetching cart:', error);
+      throw error;
+    }
+  }
 
-//   function renderCartTable(items, cartCount) {
-//     cartTableBody.innerHTML = '';
+  function renderCartTable(items, cartCount) {
+    cartTableBody.innerHTML = '';
 
-//     // Update ALL cart count elements
-//     document.querySelectorAll('.cart-count').forEach(el => {
-//       el.textContent = cartCount || 0;
-//     });
+    // Update ALL cart count elements
+    document.querySelectorAll('.cart-count').forEach(el => {
+      el.textContent = cartCount || 0;
+    });
 
-//     let totalPrice = 0;
+    let totalPrice = 0;
 
-//     if (!items || items.length === 0) {
-//       cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Your cart is empty</td></tr>';
-//       // Update ALL total price elements
-//       document.querySelectorAll('.total-price').forEach(el => {
-//         el.textContent = 'Ksh 0.00';
-//       });
-//       return;
-//     }
+    if (!items || items.length === 0) {
+      cartTableBody.innerHTML = '<tr><td colspan="5" class="text-center">Your cart is empty</td></tr>';
+      // Update ALL total price elements
+      document.querySelectorAll('.total-price').forEach(el => {
+        el.textContent = 'Ksh 0.00';
+      });
+      return;
+    }
 
-//     items.forEach(item => {
-//       const subtotal = item.quantity * parseFloat(item.price);
-//       totalPrice += subtotal;
+    items.forEach(item => {
+      const subtotal = item.quantity * parseFloat(item.price);
+      totalPrice += subtotal;
 
-//       const row = document.createElement('tr');
-//       row.innerHTML = `
-//         <td class="align-middle">
-//           <img src="${item.product_image}" alt="${item.product_name}" width="50" class="mr-2">
-//           ${item.product_name}
-//         </td>
-//         <td class="align-middle">Ksh ${parseFloat(item.price).toFixed(2)}</td>
-//         <td class="align-middle">
-//           <div class="d-flex align-items-center">
-//             <button class="btn btn-sm btn-outline-secondary decrease-qty" data-id="${item.product_id}">-</button>
-//             <input type="number" class="form-control form-control-sm quantity-input mx-2" 
-//                    data-id="${item.product_id}" 
-//                    value="${item.quantity}" min="1" style="width: 60px;">
-//             <button class="btn btn-sm btn-outline-secondary increase-qty" data-id="${item.product_id}">+</button>
-//           </div>
-//         </td>
-//         <td class="align-middle">Ksh ${subtotal.toFixed(2)}</td>
-//         <td class="align-middle">
-//           <button class="btn btn-sm btn-outline-danger remove-btn" data-id="${item.product_id}">
-//             <i class="fa fa-trash"></i>
-//           </button>
-//         </td>
-//       `;
-//       cartTableBody.appendChild(row);
-//     });
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td class="align-middle">
+          <img src="${item.product_image}" alt="${item.product_name}" width="50" class="mr-2">
+          ${item.product_name}
+        </td>
+        <td class="align-middle">Ksh ${parseFloat(item.price).toFixed(2)}</td>
+        <td class="align-middle">
+          <div class="d-flex align-items-center">
+            <button class="btn btn-sm btn-outline-secondary decrease-qty" data-id="${item.product_id}">-</button>
+            <input type="number" class="form-control form-control-sm quantity-input mx-2" 
+                   data-id="${item.product_id}" 
+                   value="${item.quantity}" min="1" style="width: 60px;">
+            <button class="btn btn-sm btn-outline-secondary increase-qty" data-id="${item.product_id}">+</button>
+          </div>
+        </td>
+        <td class="align-middle">Ksh ${subtotal.toFixed(2)}</td>
+        <td class="align-middle">
+          <button class="btn btn-sm btn-outline-danger remove-btn" data-id="${item.product_id}">
+            <i class="fa fa-trash"></i>
+          </button>
+        </td>
+      `;
+      cartTableBody.appendChild(row);
+    });
 
-//     // Update ALL total price elements
-//     document.querySelectorAll('.total-price').forEach(el => {
-//       el.textContent = `Ksh ${totalPrice.toFixed(2)}`;
-//     });
-//   }
+    // Update ALL total price elements
+    document.querySelectorAll('.total-price').forEach(el => {
+      el.textContent = `Ksh ${totalPrice.toFixed(2)}`;
+    });
+  }
 
-//   function setupCartEventListeners() {
-//     document.addEventListener('click', async (e) => {
-//       try {
-//         if (e.target.closest('.remove-btn')) {
-//           const btn = e.target.closest('.remove-btn');
-//           await removeItem(btn.dataset.id);
-//         } else if (e.target.closest('.increase-qty')) {
-//           const btn = e.target.closest('.increase-qty');
-//           await updateQuantity(btn.dataset.id, 1);
-//         } else if (e.target.closest('.decrease-qty')) {
-//           const btn = e.target.closest('.decrease-qty');
-//           await updateQuantity(btn.dataset.id, -1);
-//         }
-//       } catch (error) {
-//         console.error('Action error:', error);
-//         showToast(error.message, 'error');
-//       }
-//     });
+  function setupCartEventListeners() {
+    document.addEventListener('click', async (e) => {
+      try {
+        if (e.target.closest('.remove-btn')) {
+          const btn = e.target.closest('.remove-btn');
+          await removeItem(btn.dataset.id);
+        } else if (e.target.closest('.increase-qty')) {
+          const btn = e.target.closest('.increase-qty');
+          await updateQuantity(btn.dataset.id, 1);
+        } else if (e.target.closest('.decrease-qty')) {
+          const btn = e.target.closest('.decrease-qty');
+          await updateQuantity(btn.dataset.id, -1);
+        }
+      } catch (error) {
+        console.error('Action error:', error);
+        showToast(error.message, 'error');
+      }
+    });
 
-//     cartTableBody.addEventListener('change', async (e) => {
-//       if (e.target.classList.contains('quantity-input')) {
-//         try {
-//           const input = e.target;
-//           const productId = input.dataset.id;
-//           const newQty = Math.max(1, parseInt(input.value) || 1);
-//           await updateQuantity(productId, newQty, true);
-//         } catch (error) {
-//           console.error('Quantity change error:', error);
-//           showToast('Failed to update quantity', 'error');
-//         }
-//       }
-//     });
-//   }
+    cartTableBody.addEventListener('change', async (e) => {
+      if (e.target.classList.contains('quantity-input')) {
+        try {
+          const input = e.target;
+          const productId = input.dataset.id;
+          const newQty = Math.max(1, parseInt(input.value) || 1);
+          await updateQuantity(productId, newQty, true);
+        } catch (error) {
+          console.error('Quantity change error:', error);
+          showToast('Failed to update quantity', 'error');
+        }
+      }
+    });
+  }
 
-//   async function updateQuantity(productId, change, isAbsolute = false) {
-//     try {
-//       const body = isAbsolute
-//         ? { quantity: change }
-//         : { quantity_change: change };
+  async function updateQuantity(productId, change, isAbsolute = false) {
+    try {
+      const body = isAbsolute
+        ? { quantity: change }
+        : { quantity_change: change };
 
-//       const response = await fetch(`/api/cart/${productId}`, {
-//         method: 'PATCH',
-//         headers: { 'Content-Type': 'application/json' },
-//         body: JSON.stringify(body)
-//       });
+      const response = await fetch(`/api/cart/${productId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body)
+      });
 
-//       if (!response.ok) throw new Error('Failed to update quantity');
+      if (!response.ok) throw new Error('Failed to update quantity');
 
-//       const updatedCart = await fetchCartData();
-//       renderCartTable(updatedCart.items, updatedCart.cartCount);
-//     } catch (error) {
-//       console.error('Error updating quantity:', error);
-//       showToast(error.message, 'error');
-//     }
-//   }
+      const updatedCart = await fetchCartData();
+      renderCartTable(updatedCart.items, updatedCart.cartCount);
+    } catch (error) {
+      console.error('Error updating quantity:', error);
+      showToast(error.message, 'error');
+    }
+  }
 
-//   async function removeItem(productId) {
-//     try {
-//       const response = await fetch(`/api/cart/${productId}`, {
-//         method: 'DELETE'
-//       });
+  async function removeItem(productId) {
+    try {
+      const response = await fetch(`/api/cart/${productId}`, {
+        method: 'DELETE'
+      });
 
-//       if (!response.ok) throw new Error('Failed to remove item');
+      if (!response.ok) throw new Error('Failed to remove item');
 
-//       const updatedCart = await fetchCartData();
-//       renderCartTable(updatedCart.items, updatedCart.cartCount);
-//       showToast('Item removed from cart');
-//     } catch (error) {
-//       console.error('Error removing item:', error);
-//       showToast(error.message, 'error');
-//     }
-//   }
+      const updatedCart = await fetchCartData();
+      renderCartTable(updatedCart.items, updatedCart.cartCount);
+      showToast('Item removed from cart');
+    } catch (error) {
+      console.error('Error removing item:', error);
+      showToast(error.message, 'error');
+    }
+  }
 
-//   function showToast(message, type = 'success') {
-//     const toast = document.createElement('div');
-//     toast.className = `toast ${type}`;
-//     toast.textContent = message;
-//     document.body.appendChild(toast);
+  function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
 
-//     setTimeout(() => {
-//       toast.classList.add('show');
-//       setTimeout(() => {
-//         toast.classList.remove('show');
-//         setTimeout(() => toast.remove(), 300);
-//       }, 2000);
-//     }, 100);
-//   }
+    setTimeout(() => {
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+      }, 2000);
+    }, 100);
+  }
 
-//   if (!document.getElementById('toast-styles')) {
-//     const style = document.createElement('style');
-//     style.id = 'toast-styles';
-//     style.textContent = `
-//       .toast {
-//         position: fixed;
-//         bottom: 20px;
-//         left: 50%;
-//         transform: translateX(-50%);
-//         background: #4CAF50;
-//         color: white;
-//         padding: 12px 24px;
-//         border-radius: 4px;
-//         opacity: 0;
-//         transition: opacity 0.3s;
-//         z-index: 1000;
-//       }
-//       .toast.error {
-//         background: #f44336;
-//       }
-//       .toast.show {
-//         opacity: 1;
-//       }
-//     `;
-//     document.head.appendChild(style);
-//   }
-// });
+  if (!document.getElementById('toast-styles')) {
+    const style = document.createElement('style');
+    style.id = 'toast-styles';
+    style.textContent = `
+      .toast {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border-radius: 4px;
+        opacity: 0;
+        transition: opacity 0.3s;
+        z-index: 1000;
+      }
+      .toast.error {
+        background: #f44336;
+      }
+      .toast.show {
+        opacity: 1;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+});
 
 
 
@@ -669,366 +669,3 @@
 
 
 
-document.addEventListener('DOMContentLoaded', async function () {
-  // DOM Elements
-  const cartTableBody = document.getElementById('cart-table-body');
-  const checkoutBtn = document.getElementById('checkout-btn');
-  const emptyCartMessage = `
-    <tr>
-      <td colspan="5" class="text-center py-5">
-        <div class="empty-cart-container">
-          <i class="fas fa-shopping-cart fa-4x mb-4 text-muted"></i>
-          <h4 class="text-muted mb-3">Your cart is empty</h4>
-          <a href="/products" class="btn btn-primary btn-lg">
-            <i class="fas fa-arrow-left mr-2"></i>Continue Shopping
-          </a>
-        </div>
-      </td>
-    </tr>
-  `;
-
-  // Initialize cart
-  try {
-    const cartData = await fetchCartData();
-    renderCartTable(cartData.items, cartData.cartCount);
-    setupCartEventListeners();
-    if (checkoutBtn) {
-      checkoutBtn.disabled = cartData.items.length === 0;
-    }
-  } catch (error) {
-    console.error('Initial cart load failed:', error);
-    renderCartTable([], 0);
-    showToast('Failed to load cart. Please refresh the page.', 'error');
-  }
-
-  // Fetch cart data from server
-  async function fetchCartData() {
-    try {
-      const response = await fetch('/api/cart', {
-        headers: {
-          'Accept': 'application/json',
-          'Cache-Control': 'no-cache'
-        }
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.message || 'Failed to fetch cart data');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-      throw error;
-    }
-  }
-
-  // Render cart table
-  function renderCartTable(items, cartCount) {
-    // Update cart count indicators
-    document.querySelectorAll('.cart-count').forEach(el => {
-      el.textContent = cartCount || 0;
-      el.classList.toggle('d-none', cartCount === 0);
-    });
-
-    // Handle empty cart
-    if (!items || items.length === 0) {
-      cartTableBody.innerHTML = emptyCartMessage;
-      updateTotalPrice(0);
-      if (checkoutBtn) checkoutBtn.disabled = true;
-      return;
-    }
-
-    // Build cart items
-    cartTableBody.innerHTML = '';
-    let totalPrice = 0;
-
-    items.forEach(item => {
-      const subtotal = item.quantity * parseFloat(item.price);
-      totalPrice += subtotal;
-
-      const row = document.createElement('tr');
-      row.className = 'cart-item';
-      row.innerHTML = `
-        <td class="align-middle">
-          <div class="d-flex align-items-center">
-            <img src="${item.product_image || '/images/placeholder-product.png'}" 
-                 alt="${item.product_name}" 
-                 class="cart-item-image rounded mr-3">
-            <div>
-              <h6 class="mb-1">${item.product_name}</h6>
-              ${item.variation ? `<small class="text-muted">${item.variation}</small>` : ''}
-            </div>
-          </div>
-        </td>
-        <td class="align-middle price-cell">Ksh ${parseFloat(item.price).toFixed(2)}</td>
-        <td class="align-middle">
-          <div class="d-flex align-items-center quantity-controls">
-            <button class="btn btn-outline-secondary decrease-qty" 
-                    data-id="${item.product_id}"
-                    ${item.quantity <= 1 ? 'disabled' : ''}>
-              <i class="fas fa-minus"></i>
-            </button>
-            <input type="number" 
-                   class="form-control quantity-input mx-2 text-center" 
-                   data-id="${item.product_id}" 
-                   value="${item.quantity}" 
-                   min="1" max="99">
-            <button class="btn btn-outline-secondary increase-qty" 
-                    data-id="${item.product_id}">
-              <i class="fas fa-plus"></i>
-            </button>
-          </div>
-        </td>
-        <td class="align-middle price-cell">Ksh ${subtotal.toFixed(2)}</td>
-        <td class="align-middle">
-          <button class="btn btn-outline-danger remove-btn" 
-                  data-id="${item.product_id}"
-                  title="Remove item">
-            <i class="fas fa-trash-alt"></i>
-          </button>
-        </td>
-      `;
-      cartTableBody.appendChild(row);
-    });
-
-    updateTotalPrice(totalPrice);
-    if (checkoutBtn) checkoutBtn.disabled = false;
-  }
-
-  // Update total price display
-  function updateTotalPrice(total) {
-    document.querySelectorAll('.total-price').forEach(el => {
-      el.textContent = `Ksh ${total.toFixed(2)}`;
-    });
-  }
-
-  // Setup event listeners
-  function setupCartEventListeners() {
-    // Event delegation for cart actions
-    document.addEventListener('click', async (e) => {
-      try {
-        if (e.target.closest('.remove-btn')) {
-          const btn = e.target.closest('.remove-btn');
-          await removeItem(btn.dataset.id);
-        } else if (e.target.closest('.increase-qty')) {
-          const btn = e.target.closest('.increase-qty');
-          await updateQuantity(btn.dataset.id, 1);
-        } else if (e.target.closest('.decrease-qty')) {
-          const btn = e.target.closest('.decrease-qty');
-          await updateQuantity(btn.dataset.id, -1);
-        }
-      } catch (error) {
-        showToast(error.message, 'error');
-      }
-    });
-
-    // Handle manual quantity input
-    cartTableBody.addEventListener('change', async (e) => {
-      if (e.target.classList.contains('quantity-input')) {
-        try {
-          const input = e.target;
-          const productId = input.dataset.id;
-          const newQty = Math.max(1, Math.min(99, parseInt(input.value) || 1));
-          await updateQuantity(productId, newQty, true);
-        } catch (error) {
-          showToast('Please enter a valid quantity (1-99)', 'error');
-        }
-      }
-    });
-
-    // Add loading state to checkout button
-    if (checkoutBtn) {
-      checkoutBtn.addEventListener('click', function() {
-        this.innerHTML = '<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Processing...';
-      });
-    }
-  }
-
-  // Update item quantity
-  async function updateQuantity(productId, change, isAbsolute = false) {
-    try {
-      const body = isAbsolute
-        ? { quantity: change }
-        : { quantity_change: change };
-
-      const response = await fetch(`/api/cart/${productId}`, {
-        method: 'PATCH',
-        headers: { 
-          'Content-Type': 'application/json',
-          'Accept': 'application/json'
-        },
-        body: JSON.stringify(body)
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.message || 'Failed to update quantity');
-      }
-
-      const updatedCart = await fetchCartData();
-      renderCartTable(updatedCart.items, updatedCart.cartCount);
-      showToast('Cart updated');
-    } catch (error) {
-      console.error('Error updating quantity:', error);
-      showToast(error.message, 'error');
-      // Refresh cart to ensure UI consistency
-      try {
-        const updatedCart = await fetchCartData();
-        renderCartTable(updatedCart.items, updatedCart.cartCount);
-      } catch (fetchError) {
-        console.error('Failed to refresh cart:', fetchError);
-      }
-    }
-  }
-
-  // Remove item from cart
-  async function removeItem(productId) {
-    try {
-      if (!confirm('Are you sure you want to remove this item from your cart?')) {
-        return;
-      }
-
-      const response = await fetch(`/api/cart/${productId}`, {
-        method: 'DELETE',
-        headers: { 'Accept': 'application/json' }
-      });
-
-      if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.message || 'Failed to remove item');
-      }
-
-      const updatedCart = await fetchCartData();
-      renderCartTable(updatedCart.items, updatedCart.cartCount);
-      showToast('Item removed from cart');
-    } catch (error) {
-      console.error('Error removing item:', error);
-      showToast(error.message, 'error');
-    }
-  }
-
-  // Show toast notification
-  function showToast(message, type = 'success') {
-    // Remove existing toasts
-    document.querySelectorAll('.toast-notification').forEach(el => el.remove());
-    
-    const toast = document.createElement('div');
-    toast.className = `toast-notification ${type}`;
-    toast.innerHTML = `
-      <div class="toast-icon">
-        <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
-      </div>
-      <div class="toast-message">${message}</div>
-      <button class="toast-close">&times;</button>
-    `;
-    
-    document.body.appendChild(toast);
-    
-    // Show toast
-    setTimeout(() => toast.classList.add('show'), 10);
-    
-    // Auto-hide after 3 seconds
-    const autoHide = setTimeout(() => {
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
-    
-    // Manual close
-    toast.querySelector('.toast-close').addEventListener('click', () => {
-      clearTimeout(autoHide);
-      toast.classList.remove('show');
-      setTimeout(() => toast.remove(), 300);
-    });
-  }
-
-  // Add styles if not already present
-  if (!document.getElementById('cart-styles')) {
-    const style = document.createElement('style');
-    style.id = 'cart-styles';
-    style.textContent = `
-      /* Cart table styles */
-      .cart-item-image {
-        width: 70px;
-        height: 70px;
-        object-fit: cover;
-      }
-      
-      .quantity-controls .btn {
-        width: 38px;
-        height: 38px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-      }
-      
-      .quantity-input {
-        width: 60px;
-        height: 38px;
-      }
-      
-      .price-cell {
-        font-weight: 500;
-        white-space: nowrap;
-      }
-      
-      /* Empty cart styles */
-      .empty-cart-container {
-        max-width: 400px;
-        margin: 0 auto;
-        text-align: center;
-      }
-      
-      /* Toast notifications */
-      .toast-notification {
-        position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: #333;
-        color: white;
-        padding: 12px 24px;
-        border-radius: 6px;
-        display: flex;
-        align-items: center;
-        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-        z-index: 1000;
-        opacity: 0;
-        transition: all 0.3s ease;
-      }
-      
-      .toast-notification.success {
-        background: #28a745;
-      }
-      
-      .toast-notification.error {
-        background: #dc3545;
-      }
-      
-      .toast-notification.show {
-        opacity: 1;
-        bottom: 30px;
-      }
-      
-      .toast-icon {
-        margin-right: 12px;
-        font-size: 1.2rem;
-      }
-      
-      .toast-message {
-        margin-right: 12px;
-      }
-      
-      .toast-close {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        line-height: 1;
-        cursor: pointer;
-        padding: 0 0 0 12px;
-      }
-    `;
-    document.head.appendChild(style);
-  }
-});
