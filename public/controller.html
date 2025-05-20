@@ -142,10 +142,10 @@
                 <div class="col-lg-3">
                     <div class="header__cart">
                          <ul>
-            <li><a href=""><i class="fa fa-heart"></i> <span id="wishlist-count">0</span></a></li>
+            <!-- <li><a href=""><i class="fa fa-heart"></i> <span id="wishlist-count">0</span></a></li> -->
              <li><a href="shopping-cart.html"><i class="fa fa-shopping-cart" ></i><span class="cart-count">0</span></a></li>
         
-             <div class="">Total: <span class="total-price">ksh 0.00</span></div>
+             <!-- <div class="">Total: <span class="total-price">ksh 0.00</span></div> -->
          </ul>
                     </div>
                 </div>
@@ -328,6 +328,30 @@
  <script src="js/login.js"></script>
  <script src="js/register.js"></script>
  
+ <script>
+document.addEventListener('DOMContentLoaded', async function () {
+  try {
+    const response = await fetch('/api/cart', {
+      headers: { 'Accept': 'application/json' }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch cart data');
+
+    const data = await response.json();
+
+    document.querySelectorAll('.cart-count').forEach(el => {
+      el.textContent = data.cartCount || 0;
+    });
+
+    document.querySelectorAll('.total-price').forEach(el => {
+      el.textContent = 'Ksh ' + (data.totalPrice || '0.00');
+    });
+  } catch (error) {
+    console.error('Error loading cart count:', error);
+  }
+});
+</script>
+
  
 </body>
 </html>
