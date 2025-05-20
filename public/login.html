@@ -1,72 +1,59 @@
-<html>
-
+<!doctype html>
+<html lang="en" data-bs-theme="auto">
 <head>
-    <meta charset="UTF-8">
-    <title>Login</title>
-    <meta name="description" content="Login - Register Template">
-    <meta name="author" content="Lorenzo Angelino aka MrLolok">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/main.css">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #F2F2F2;
-        }
-    </style>
+    
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="sips college">
+   
+    <title>sips | Login</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
 </head>
+<body style="background-image: url(img/nice\ bg.PNG);">
+   
+<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    
+</svg>
 
-<body>
-    <div id="container-login">
-        <div id="title">
-            <i class="material-icons lock">lock</i> Login
-            <a class="x"></a>
-        </div>
+<main>
+    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+        <div class="row align-items-center g-lg-5 py-5">
+            <div class="col-lg-7 text-center text-lg-start">
+                <img src="img/training_pic.jpg" >
 
-        <form id="form" action="submit" method="POST">
-            <div class="input">
-                <div class="input-addon">
-                    <i class="material-icons">face</i>
-                </div>
-                <input id="email" placeholder="Email" type="text" required class="validate" autocomplete="off">
+              <div class="hero">
+            
+              </div>
+          
             </div>
-
-            <div class="clearfix"></div>
-
-            <div class="input">
-                <div class="input-addon">
-                    <i class="material-icons">vpn_key</i>
-                </div>
-                <input id="password" placeholder="Password" type="password" required class="validate" autocomplete="off">
+            <div class="col-md-10 mx-auto col-lg-5">
+                <form id="form" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+                    <div class="form-floating mb-3">
+                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                        <label for="email">Email address</label>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input type="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password">Password</label>
+                    </div>
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" value="remember-me"> Remember me
+                        </label>
+                    </div>
+                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                    <p id="auth-msg"></p>
+                    <hr class="my-4">
+                    <small class="text-body-secondary">By clicking Sign in, you agree to the terms of use.</small>
+                    <small class="text-body-secondary">Don't have an account? <a href="register.html">Register here</a>.</small>
+                </form>
             </div>
-
-            <div class="remember-me">
-                <input type="checkbox">
-                <span style="color: #757575">Remember Me</span>
-            </div>
-
-            <input type="submit" value="Log In" />
-            <p id="auth-msg"></p>
-        </form>
-
-        <div class="forgot-password">
-            <a href="#">Forgot your password?</a>
-        </div>
-        <div class="privacy">
-            <a href="privacy.html">Privacy Policy</a>
-        </div>
-
-        <div class="register">
-            <span style="color: #657575">Don't have an account yet?</span><br>
-            <a href="./register.html"><button id="register-link">Register here</button></a>
-            <a href="./index.html"><button id="register-link">Cancel</button></a>
         </div>
     </div>
-
-    <!-- script file -->
-    <script src="./login.js"></script>
-    <script src="./register.js"></script>
-    <script src="./script.js"></script>
+</main>
+<!-- 
+<script src="../public/assets/dist/js/bootstrap.bundle.min.js"></script> -->
+<script src="js/login.js"></script>
 </body>
-
 </html>
