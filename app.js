@@ -594,6 +594,95 @@ app.post('/api/checkout/order', async (req, res) => {
   }
 });
 
+
+
+
+// user handler
+
+
+ // Create database if it does not exist
+    pool.query(`CREATE DATABASE IF NOT EXISTS users_DB`, (err, result) => {
+        if (err) return console.log('Error creating database');
+        console.log('Database Vitronicsstore_DB created Successfully');
+
+       
+        pool.changeUser({ database: 'users_DB' }, (err) => {
+            if (err) throw err;
+            console.log('Switched to users_DB database');
+
+            // Create users table if it does not exist
+            const createUsersTable = `
+                CREATE TABLE IF NOT EXISTS users (
+                    id INT AUTO_INCREMENT PRIMARY KEY,
+                    email VARCHAR(255) NOT NULL UNIQUE,
+                    username VARCHAR(255) NOT NULL,
+                    password VARCHAR(255) NOT NULL
+                )
+            `;
+            pool.query(createUsersTable, (err, result) => {
+                if (err) throw err;
+                console.log('Users table created successfully');
+            });
+        });
+    });
+
+
+// create a database
+
+
+// User registration route
+app.post('/api/register', async(req, res) => {
+    try{
+        // check if user email exists
+        const user = `SELECT * FROM users WHERE email = ?`
+
+        //
+      pool.query(user, [req.body.email], (err, data) => {
+            if(data.length) return res.status(409).json({ "message": "User already exists!" });
+
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+
+            const newUser = `INSERT INTO users(email, username, password) VALUES (?) `
+            value = [
+                req.body.email,
+                req.body.username,
+                hashedPassword
+            ]
+
+            // adding the new user to the database
+           pool.query(newUser, [value], (err, data) => {
+                if(err) return res.status(500).json({ "message": "Something went wrong, User cannot be created! Try again later" });
+
+                return res.status(200).json({ "message": "User created successfully! Something went wrong, User cannot be created! Try again later" })
+            })
+        })
+        
+    } catch(err) {
+        res.status(500).json({ "message": "Something went wrong" })
+    }
+})
+
+
+// user login route
+app.post('/api/login', async(req, res) => {
+    try{
+        const user = `SELECT * FROM users WHERE email = ?`
+        
+        pool.query(user, [req.body.email], (err, data) => {
+            if(data.length === 0) return res.status(404).json({ "message": "User not found!" })
+
+            const isPasswordValid = bcrypt.compareSync(req.body.password, data[0].password);
+
+            if(!isPasswordValid) return res.status(400).json({ "message": "Invalid email or password" });
+
+            return res.status(200).json({ "message": "Login successful" });
+        })
+    } catch(err) {
+        res.status(500).json(err)
+    } 
+})
+
 // Start server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

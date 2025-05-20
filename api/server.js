@@ -31,14 +31,14 @@ db.connect((err) => {
  
    
     // Create database if it does not exist
-    db.query(`CREATE DATABASE IF NOT EXISTS Vitronicsstore_DB`, (err, result) => {
+    db.query(`CREATE DATABASE IF NOT EXISTS users_DB`, (err, result) => {
         if (err) return console.log('Error creating database');
         console.log('Database Vitronicsstore_DB created Successfully');
 
         // Switch to the expense_tracker database
-        db.changeUser({ database: 'Vitronicsstore_DB' }, (err) => {
+        db.changeUser({ database: 'users_DB' }, (err) => {
             if (err) throw err;
-            console.log('Switched to Vitronicsstore_DB database');
+            console.log('Switched to users_DB database');
 
             // Create users table if it does not exist
             const createUsersTable = `
