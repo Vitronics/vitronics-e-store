@@ -597,35 +597,22 @@ app.post('/api/checkout/order', async (req, res) => {
 
 
 
-// user handler
-
-
- // Create database if it does not exist
-    pool.query(`CREATE DATABASE IF NOT EXISTS users_DB`, (err, result) => {
-        if (err) return console.log('Error creating database');
-        console.log('Database Vitronicsstore_DB created Successfully');
-
-       
-        pool.changeUser({ database: 'users_DB' }, (err) => {
-            if (err) throw err;
-            console.log('Switched to users_DB database');
-
+// user handlert
+   
             // Create users table if it does not exist
-            const createUsersTable = `
-                CREATE TABLE IF NOT EXISTS users (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    email VARCHAR(255) NOT NULL UNIQUE,
-                    username VARCHAR(255) NOT NULL,
-                    password VARCHAR(255) NOT NULL
-                )
-            `;
-            pool.query(createUsersTable, (err, result) => {
-                if (err) throw err;
-                console.log('Users table created successfully');
-            });
-        });
-    });
-
+            // const createUsersTable = `
+            //     CREATE TABLE IF NOT EXISTS users (
+            //         id INT AUTO_INCREMENT PRIMARY KEY,
+            //         email VARCHAR(255) NOT NULL UNIQUE,
+            //         username VARCHAR(255) NOT NULL,
+            //         password VARCHAR(255) NOT NULL
+            //     )
+            // `;
+            // pool.query(createUsersTable, (err, result) => {
+            //     if (err) throw err;
+            //     console.log('Users table created successfully');
+            // });
+    
 
 // create a database
 
