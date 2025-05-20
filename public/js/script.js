@@ -566,7 +566,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         : { quantity_change: change };
 
       const response = await fetch(`/api/cart/${productId}`, {
-        method: 'PATCH',
+        method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
           'Accept': 'application/json'
