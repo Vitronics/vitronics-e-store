@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS cart_items (
 );
 
 
---Users
+-- Users
 
  CREATE TABLE IF NOT EXISTS users (
                     id INT AUTO_INCREMENT PRIMARY KEY,
