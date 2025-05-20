@@ -1113,9 +1113,9 @@ height: 20px;
 	width: 100%;
 }
 
-.product__discount__item:hover .product__discount__item__pic .product__item__pic__hover {
+/* .product__discount__item:hover .product__discount__item__pic .product__item__pic__hover {
 	bottom: 20px;
-}
+} */
 
 .product__discount__item__pic {
 	height: 100px;
@@ -3024,3 +3024,141 @@ height: 20px;
 }
 
 
+ .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: -10px;
+  }
+  
+  .col-lg-4 {
+    padding: 10px;
+    flex: 0 0 50%; /* 2 columns on mobile */
+    max-width: 50%;
+  }
+  
+  /* Product Card - Fixed Height for Mobile */
+  .product__discount__item {
+    position: relative;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    background: #fff;
+    height: 200px; /* Fixed height for mobile */
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Image Container - Square Aspect Ratio */
+  .product__discount__item__pic,
+  .shop-img {
+    position: relative;
+    height: 120px; /* Reduced height for mobile */
+    overflow: hidden;
+    background: #f8f9fa;
+  }
+  
+  /* Product Image */
+  .product__discount__item__pic img,
+  .shop-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    object-position: center;
+    padding: 10px;
+    transition: transform 0.3s ease;
+    background: #fff;
+  }
+  
+  /* Discount Badge - Smaller for mobile */
+  .product_discount {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #ff4a52;
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 11px;
+    z-index: 2;
+  }
+  
+  /* Text Content - Compact for mobile */
+  .featured__item__text {
+    padding: 10px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .product__discount__item__text span {
+    font-size: 12px;
+    margin-bottom: 2px;
+  }
+  
+  .product__discount__item__text h5,
+  .product__discount__item__text h6 {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  /* Price - Smaller font for mobile */
+  .item__price,
+  .product__item__price {
+    font-size: 14px;
+  }
+  
+  .item__price span,
+  .product__item__price span {
+    font-size: 12px;
+  }
+  
+  /* Action Buttons - Smaller for mobile */
+  .product__item__pic__hover {
+    bottom: 10px;
+  }
+  
+  .product__item__pic__hover a {
+    width: 30px;
+    height: 30px;
+    font-size: 14px;
+  }
+  
+  /* Desktop Adjustments */
+  @media (min-width: 768px) {
+    .col-lg-4 {
+      flex: 0 0 33.333%;
+      max-width: 33.333%;
+    }
+    
+    .product__discount__item {
+      height: 280px; /* Taller on desktop */
+    }
+    
+    .product__discount__item__pic,
+    .shop-img {
+      height: 180px; /* Taller image area on desktop */
+    }
+    
+    .product_discount {
+      width: 44px;
+      height: 44px;
+      font-size: 12px;
+    }
+    
+    .featured__item__text {
+      padding: 15px;
+    }
+  }
+  
+  @media (min-width: 992px) {
+    .col-lg-4 {
+      flex: 0 0 25%;
+      max-width: 25%; /* 4 columns on large screens */
+    }
+  }
