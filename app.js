@@ -614,7 +614,7 @@ app.post('/api/checkout/order', async (req, res) => {
             // });
     
 // user register
-app.post('/register', async (req, res) => {
+app.post('/api/register', async (req, res) => {
     try {
         const { email, username, password } = req.body;
 
@@ -654,7 +654,7 @@ app.post('/register', async (req, res) => {
 
 
 // User login route
-app.post('/login', async (req, res) => {
+app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
         console.log('Login attempt with email:', email); // Log the email being checked
