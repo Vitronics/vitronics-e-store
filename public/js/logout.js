@@ -1,7 +1,7 @@
 document.getElementById('logoutButton').addEventListener('click', function() {
-    fetch('/logout', {
+    fetch('/api/logout', {
         method: 'POST',
-        credentials: 'include'  // Include cookies in the request
+        credentials: 'include'  
     })
     .then(response => response.json())
     .then(data => {
@@ -12,7 +12,7 @@ document.getElementById('logoutButton').addEventListener('click', function() {
             
             // Redirect to login page or home page after a delay
             setTimeout(() => {
-                window.location.href = '/login';  // Change this URL as needed
+                window.location.href = '/login';  
             }, 2000);  // Redirect after 2 seconds
         }
     })
