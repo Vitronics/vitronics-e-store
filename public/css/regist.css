@@ -1,0 +1,180 @@
+/* General Styles */
+body {
+  background-image: url('img/nice\ bg.PNG');
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+/* Main Content Container */
+main {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+/* Left Column - Welcome Content */
+.text-lg-start {
+  color: #fff;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.text-lg-start h1 {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  color: #333;
+}
+
+.text-lg-start img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  margin-top: 1rem;
+}
+
+
+/* Right Column - Registration Form */
+.border.rounded-3.bg-body-tertiary {
+  background-color: rgba(255, 255, 255, 0.95) !important;
+  backdrop-filter: blur(5px);
+    border-radius:10px; 
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 2rem !important;
+}
+
+.form-floating {
+  margin-bottom: 1.5rem;
+}
+
+.form-control {
+  height: 50px;
+  padding: 0.75rem 1rem;
+  border: 1px solid #ced4da;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.form-control:focus {
+  border-color: #86b7fe;
+  box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.form-floating label {
+  padding: 0.75rem 1rem;
+  color: #6c757d;
+}
+
+/* Checkbox Styling */
+.remember-me {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.remember-me input {
+  width: 18px;
+  height: 18px;
+  accent-color: #0d6efd;
+}
+
+/* Button Styling */
+.btn-primary {
+  background-color: #0d6efd;
+  border: none;
+  padding: 0.75rem;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  transform: translateY(-2px);
+}
+
+/* Divider Line */
+hr.my-4 {
+  border-top: 1px solid #dee2e6;
+  margin: 1.5rem 0;
+}
+
+/* Footer Links */
+.text-body-secondary {
+  color: #6c757d !important;
+  font-size: 0.875rem;
+}
+
+.text-body-secondary a {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.text-body-secondary a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 991.98px) {
+  .row.align-items-center.g-lg-5.py-5 {
+    flex-direction: column;
+    gap: 2rem;
+  }
+  
+  .col-lg-7.text-center.text-lg-start {
+    text-align: center !important;
+    margin-bottom: 2rem;
+  }
+  
+  .col-md-10.mx-auto.col-lg-5 {
+    width: 100%;
+    max-width: 500px;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  
+  .border.rounded-3.bg-body-tertiary {
+    padding: 1.5rem !important;
+  }
+  
+  .text-lg-start h1 {
+    font-size: 2rem;
+  }
+}
+
+/* Additional Utility Classes */
+#auth-msg {
+  margin-top: 1rem;
+  font-size: 0.875rem;
+  min-height: 20px;
+}
+
+/* Animation for form */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+#form {
+  animation: fadeIn 0.5s ease-out forwards;
+}

@@ -3030,7 +3030,7 @@ height: 20px;
  .row {
     display: flex;
     flex-wrap: wrap;
-    margin: -10px;
+    margin: 10px;
   }
   
   .col-lg-4 {
