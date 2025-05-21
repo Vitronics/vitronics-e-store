@@ -1257,9 +1257,9 @@ height: 20px;
 }
 
 
-.product__discount__slider .col-lg-4 {
+/* .product__discount__slider .col-lg-4 {
 	max-width: 100%;
-}
+} */
 
 .product__discount__slider.owl-carousel .owl-dots {
 	text-align: center;
@@ -2026,8 +2026,10 @@ height: 20px;
 
 .checkout__order {
 	background: #f5f5f5;
-	padding: 40px;
-	padding-top: 30px;
+	padding: 20px;
+	width: 450px;
+
+	
 }
 
 .checkout__order h4 {
@@ -2040,7 +2042,7 @@ height: 20px;
 
 .checkout__order .checkout__order__products {
 	font-size: 18px;
-	color: #1c1c1c;
+	color: #615d5d;
 	font-weight: 700;
 	margin-bottom: 10px;
 }
@@ -2967,6 +2969,7 @@ height: 20px;
 	}
 	.checkout__order {
 		padding: 20px;
+		
 	}
 	.blog__details__hero__text h2 {
 		font-size: 24px;
