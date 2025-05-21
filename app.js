@@ -606,7 +606,7 @@ app.post('/api/register', async (req, res) => {
         }
 
         const userQuery = 'SELECT * FROM users WHERE email = ?';
-        connection.query(userQuery, [email], (err, data) => {
+        pool.query(userQuery, [email], (err, data) => {
             if (err) {
                 console.error('Database error during user lookup:', err);
                 return res.status(500).json({ message: 'Database error' });
@@ -620,7 +620,7 @@ app.post('/api/register', async (req, res) => {
             const hashedPassword = bcrypt.hashSync(password, salt);
 
             const newUserQuery = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
-           connection.query(newUserQuery, [email, username, hashedPassword], (err) => {
+           pool.query(newUserQuery, [email, username, hashedPassword], (err) => {
                 if (err) {
                     console.error('Database error during user creation:', err);
                     return res.status(500).json({ message: 'User cannot be created! Try again later.' });
@@ -642,7 +642,7 @@ app.post('/api/login', async (req, res) => {
         console.log('Login attempt with email:', email); // Log the email being checked
         
         const userQuery = 'SELECT * FROM users WHERE email = ?';
-        connection.query(userQuery, [email], (err, data) => {
+       pool.query(userQuery, [email], (err, data) => {
             if (err) {
                 console.error('Database error:', err);
                 return res.status(500).json({ message: 'Database error' });
