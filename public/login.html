@@ -1,65 +1,124 @@
 <!doctype html>
 <html lang="en" data-bs-theme="auto">
 <head>
-    
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="sips college">
-   
-    <title>vitronics | Login</title>
-    <link href="css/bootstrap.min.css" rel="stylesheet">
-      <link href="css/regist.css" rel="stylesheet">
 
-</head>
-<body style="background-image: url(img/nice\ bg.PNG);">
-   
-<svg xmlns="http://www.w3.org/2000/svg" class="d-none">
-    
-</svg>
+<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+	<meta name="description" content="" />
+	<meta name="author" content="" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta property="og:title" content="DJs, Photographers, Makeup-Artists, Venues and more" />
+	<meta property="og:description" content=" DJs, Photographers, Makeup-Artists, Venues and more" />
+	<meta property="og:type" content="website" />
+  <title>servicehub</title>
+    <link rel="canonical" href="https://getbootstrap.com/docs/5.3/examples/heroes/">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@docsearch/css@3">
+    <link href="./assets/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/hstyles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.7/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+  
 
-<main>
-    <div class="container col-xl-10 col-xxl-8 px-4 py-5">
-        <div class="row align-items-center g-lg-5 py-5">
-            
-            <div class="col-lg-7 text-center text-lg-start">
-                <h1 style="font-size: 40px; font-weight: 800;">Online Shopping made easier</h1>
-                <img src="img/Ecomerce-img.png" >
-
-              <div class="hero">
-            
-              </div>
-          
+    <!-- Custom styles for this template -->
+    <!-- <link href="heroes.css" rel="stylesheet"> -->
+    <script src="./js/hscript.js"></script>
+  
+ 
+  </head>
+  <body style="background-image: url(img/nice\ bg.PNG);">
+    <nav class="navbar navbar-expand-md bg-blue sticky-top border-bottom" data-bs-theme="dark">
+        <div class="container">
+            <h1>serviceHub</h1>
+          <a class="navbar-brand d-md-none" href="#">
+            <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
+            Aperture
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvas" aria-controls="offcanvas" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvas" aria-labelledby="offcanvasLabel">
+            <div class="offcanvas-header">
+              <h5 class="offcanvas-title" id="offcanvasLabel">Aperture</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
             </div>
-            <div class="col-md-10 mx-auto col-lg-5">
-                <form id="form" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
-                    <div class="form-floating mb-3">
-                         <label for="email">Email address</label>
-                        <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
-                       
-                    </div>
-                    <div class="form-floating mb-3"> <label for="password">Password</label>
-                        <input type="password" class="form-control" id="password" placeholder="Password" required>
-                       
-                    </div>
-                    <div class="checkbox mb-3">
-                        <label>
-                            <input type="checkbox" value="remember-me"> Remember me
-                        </label>
-                    </div>
-                    <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
-                    <p id="auth-msg"></p>
-                    <hr class="my-4">
-                    <small class="text-body-secondary">By clicking Sign in, you agree to the terms of use.</small>
-                    <small class="text-body-secondary">Don't have an account? <a href="register.html">Register here</a></small>
-                    <br>
-                      <small class="text-body-secondary"> <a href="index.html">Cancel</a></small>
-                </form>
+            <div class="offcanvas-body">
+               
+              <ul class="navbar-nav ms-auto justify-content-around">
+                <li class="nav-item"><a class="nav-link" href="#">
+                  <svg class="bi" width="24" height="24"><use xlink:href="#aperture"/></svg>
+                </a></li>
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item dropdown">
+                  <a class="nav-link dropdown-toggle" href="#" id="productDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    Product
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="productDropdown">
+                    <li><a class="dropdown-item" href="/event-planners">Event Planners</a></li>
+                    <li><a class="dropdown-item" href="/venue-setup">Venue Setup and Equipments</a></li>
+                    <li><a class="dropdown-item" href="/culinary">Culinary Services</a></li>  
+                    <li><a class="dropdown-item" href="/Entertainers">Professional Entertainers</a></li>
+                    <li><a class="dropdown-item" href="/fun-activities">Interactive Fun activities</a></li>
+                    <li><a class="dropdown-item" href="/beauty">Beauty and Decor</a></li>  
+                    <li><a class="dropdown-item" href="/special-effects">Special Effects</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item"  href="/upload">Upload product</a></li>
+                  </ul>
+                </li>
+                <li class="nav-item"><a class="nav-link" href="#">Features</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Enterprise</a></li>
+                <li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+                <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">
+                  <svg class="bi" width="24" height="24"><use xlink:href="#cart"/></svg>
+                </a></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </nav>
+      
+
+      <main>
+        <div class="container col-xl-10 col-xxl-8 px-4 py-5">
+            <div class="row align-items-center g-lg-5 py-5">
+                <div class="col-lg-7 text-center text-lg-start">
+                    <h1 class="display-4 fw-bold lh-1 text-body-emphasis mb-3">Sign In to Connect with Clients and Opportunities</h1>
+                    <p class="col-lg-10 fs-4">Ready to Find or Offer Services? Sign In.</p>
+                    
+            
+              
+                  
+              
+                </div>
+                <div class="col-md-10 mx-auto col-lg-5">
+                    <form id="form" class="p-4 p-md-5 border rounded-3 bg-body-tertiary">
+                        <div class="form-floating mb-3">
+                            <input type="email" class="form-control" id="email" placeholder="name@example.com" required>
+                            <label for="email">Email address</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="password" class="form-control" id="password" placeholder="Password" required>
+                            <label for="password">Password</label>
+                        </div>
+                        <div class="checkbox mb-3">
+                            <label>
+                                <input type="checkbox" value="remember-me"> Remember me
+                            </label>
+                        </div>
+                        <button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+                        <p id="auth-msg"></p>
+                        <hr class="my-4">
+                        <small class="text-body-secondary">By clicking Sign in, you agree to the terms of use.</small>
+                        <small class="text-body-secondary">Don't have an account? <a href="/register">Register here</a>.</small>
+                    </form>
+                </div>
             </div>
         </div>
-    </div>
-</main>
-<!-- 
-<script src="../public/assets/dist/js/bootstrap.bundle.min.js"></script> -->
+    </main>
+    
+
 <script src="js/login.js"></script>
 </body>
 </html>

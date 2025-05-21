@@ -613,62 +613,92 @@ app.post('/api/checkout/order', async (req, res) => {
             //     console.log('Users table created successfully');
             // });
     
+// user register
+app.post('/register', async (req, res) => {
+    try {
+        const { email, username, password } = req.body;
 
-// create a database
+        // Check if all required fields are provided
+        if (!email || !username || !password) {
+            return res.status(400).json({ message: 'Please provide email, username, and password.' });
+        }
 
+        const userQuery = 'SELECT * FROM users WHERE email = ?';
+        connection.query(userQuery, [email], (err, data) => {
+            if (err) {
+                console.error('Database error during user lookup:', err);
+                return res.status(500).json({ message: 'Database error' });
+            }
 
-// User registration route
-app.post('/api/register', async(req, res) => {
-    try{
-        // check if user email exists
-        const user = `SELECT * FROM users WHERE email = ?`
-
-        //
-      pool.query(user, [req.body.email], (err, data) => {
-            if(data.length) return res.status(409).json({ "message": "User already exists!" });
+            if (data.length) {
+                return res.status(409).json({ message: 'User already exists!' });
+            }
 
             const salt = bcrypt.genSaltSync(10);
-            const hashedPassword = bcrypt.hashSync(req.body.password, salt);
+            const hashedPassword = bcrypt.hashSync(password, salt);
 
-            const newUser = `INSERT INTO users(email, username, password) VALUES (?) `
-            value = [
-                req.body.email,
-                req.body.username,
-                hashedPassword
-            ]
-
-            // adding the new user to the database
-           pool.query(newUser, [value], (err, data) => {
-                if(err) return res.status(500).json({ "message": "Something went wrong, User cannot be created! Try again later" });
-
-                return res.status(200).json({ "message": "User created successfully! Something went wrong, User cannot be created! Try again later" })
-            })
-        })
-        
-    } catch(err) {
-        res.status(500).json({ "message": "Something went wrong" })
+            const newUserQuery = 'INSERT INTO users (email, username, password) VALUES (?, ?, ?)';
+           connection.query(newUserQuery, [email, username, hashedPassword], (err) => {
+                if (err) {
+                    console.error('Database error during user creation:', err);
+                    return res.status(500).json({ message: 'User cannot be created! Try again later.' });
+                }
+                res.status(200).json({ message: 'User created successfully!' });
+            });
+        });
+    } catch (err) {
+        console.error('Unexpected error in /register route:', err);
+        res.status(500).json({ message: 'Something went wrong' });
     }
-})
+});
 
 
-// user login route
-app.post('/api/login', async(req, res) => {
-    try{
-        const user = `SELECT * FROM users WHERE email = ?`
+// User login route
+app.post('/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        console.log('Login attempt with email:', email); // Log the email being checked
         
-        pool.query(user, [req.body.email], (err, data) => {
-            if(data.length === 0) return res.status(404).json({ "message": "User not found!" })
+        const userQuery = 'SELECT * FROM users WHERE email = ?';
+        connection.query(userQuery, [email], (err, data) => {
+            if (err) {
+                console.error('Database error:', err);
+                return res.status(500).json({ message: 'Database error' });
+            }
 
-            const isPasswordValid = bcrypt.compareSync(req.body.password, data[0].password);
+            if (data.length === 0) {
+                console.log('User not found for email:', email); // Log if the user is not found
+                return res.status(404).json({ message: 'User not found!' });
+            }
 
-            if(!isPasswordValid) return res.status(400).json({ "message": "Invalid email or password" });
+            const user = data[0];
+            console.log('User found:', user); // Log user details
 
-            return res.status(200).json({ "message": "Login successful" });
-        })
-    } catch(err) {
-        res.status(500).json(err)
-    } 
-})
+            const isPasswordValid = bcrypt.compareSync(password, user.password);
+            console.log('Password comparison result:', isPasswordValid); // Log the result of the password comparison
+
+            if (!isPasswordValid) {
+                console.log('Invalid password for user:', email); // Log if the password is invalid
+                return res.status(400).json({ message: 'Invalid email or password' });
+            }
+
+            res.status(200).json({
+                message: 'Login successful',
+                user_id: user.id,
+                user: {
+                    email: user.email,
+                    username: user.username
+                }
+            });
+
+            console.log('Logged in user ID:', user.id, user.email);
+        });
+    } catch (err) {
+        console.error('Error during login:', err);
+        res.status(500).json({ message: 'Something went wrong' });
+    }
+});
+
 
 // Start server
 app.listen(port, () => {
