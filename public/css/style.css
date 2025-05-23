@@ -966,9 +966,10 @@ height: 20px;
   Latest Product
 -----------------------*/
 
+
 .latest-product {
-	padding-top: 80px;
-	padding-bottom: 0;
+	
+	padding-bottom: 0px;
 }
 
 .latest-product__text h4 {
@@ -980,16 +981,27 @@ height: 20px;
 .latest-product__slider.owl-carousel .owl-nav {
 	position: absolute;
 	right: 20px;
+	
 	top: -75px;
 }
 
+.product-rating {
+    margin-top: 5px;
+    color: #ffc107;
+    font-size: 14px;
+}
+
+.product-rating i {
+    margin-right: 2px;
+}
 .latest-product__slider.owl-carousel .owl-nav button {
 	height: 30px;
+	margin-left: -px;
 	width: 30px;
 	background: #F3F6FA;
 	border: 1px solid #e6e6e6;
 	font-size: 14px;
-	color: #636363;
+	color: #4ee966;
 	margin-right: 10px;
 	line-height: 30px;
 	text-align: center;
@@ -1004,14 +1016,15 @@ height: 20px;
 }
 
 .latest-product__item {
-	margin-bottom: 20px;
+	margin-bottom: 30px;
+	
 	overflow: hidden;
 	display: block;
 }
 
 .latest-product__item__pic {
 	float: left;
-	margin-right: 26px;
+	margin-right: 35px;
 }
 
 .latest-product__item__pic img {
@@ -1034,6 +1047,23 @@ height: 20px;
 	display: block;
 	color: #252525;
 	font-weight: 700;
+}
+
+/*---------------------
+  Form BLog
+-----------------------*/
+
+.from-blog {
+	padding-top: 50px;
+	padding-bottom: 50px;
+}
+
+.from-blog .blog__item {
+	margin-bottom: 30px;
+}
+
+.from-blog__title {
+	margin-bottom: 70px;
 }
 
 /*---------------------
