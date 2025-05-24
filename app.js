@@ -185,6 +185,7 @@ const cors = require('cors');
 const mysql = require('mysql2/promise');
 const fs = require('fs');
 require('dotenv').config();
+//const session = require('express-session');
 const bcrypt = require('bcryptjs')
 
 const app = express();
@@ -197,7 +198,7 @@ if (!fs.existsSync('uploads')) {
 
 // MySQL connection pool
 const pool = mysql.createPool({
-    host: process.env.MYSQLHOST || 'localhost',
+    host: process.env.MYSQLHOST,
     port: process.env.MYSQLPORT || 3306,
     user: process.env.MYSQLUSER,
     password: process.env.MYSQLPASSWORD,
