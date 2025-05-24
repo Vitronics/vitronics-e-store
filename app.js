@@ -736,27 +736,28 @@ app.post('/api/login', async (req, res) => {
 
 
 // Check authentication status
-app.get('/api/check-auth', (req, res) => {
-    res.json({ 
-        authenticated: !!req.session.userId,
-        user: req.session.userId ? { 
-            id: req.session.userId,
-            email: req.session.userEmail 
-        } : null
-    });
-});
+// app.get('/api/check-auth', (req, res) => {
+//     res.json({ 
+//         authenticated: !!req.session.userId,
+//         user: req.session.userId ? { 
+//             id: req.session.userId,
+//             email: req.session.userEmail 
+//         } : null
+//     });
+// });
 
-// Logout endpoint
-app.post('/api/logout', (req, res) => {
-    req.session.destroy(err => {
-        if (err) {
-            console.error('Logout error:', err);
-            return res.status(500).json({ message: 'Logout failed' });
-        }
-        res.clearCookie('connect.sid');
-        res.json({ message: 'Logout successful' });
-    });
-});
+// // Logout endpoint
+// app.post('/api/logout', (req, res) => {
+//     req.session.destroy(err => {
+//         if (err) {
+//             console.error('Logout error:', err);
+//             return res.status(500).json({ message: 'Logout failed' });
+//         }
+//         res.clearCookie('connect.sid');
+//         res.json({ message: 'Logout successful' });
+//     });
+// });
+
 // Start server
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);
