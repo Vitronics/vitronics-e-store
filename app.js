@@ -680,58 +680,64 @@ app.post('/api/register', async (req, res) => {
 //     }
 // });
 
-
 app.post('/api/login', async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log('Login attempt with email:', email);
-
-        const conn = await pool.getConnection();
-
+        
         // Get user from database
-        const [rows] = await conn.query('SELECT * FROM users WHERE email = ?', [email]);
-        conn.release();
-
+        const [rows] = await pool.query('SELECT * FROM users WHERE email = ?', [email]);
+        
         if (rows.length === 0) {
-            console.log('User not found for email:', email);
-            return res.status(404).json({ message: 'User not found!' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         const user = rows[0];
-        console.log('User found:', user.email);
-
+        
         // Verify password
         const isPasswordValid = await bcrypt.compare(password, user.password);
-        console.log('Password comparison result:', isPasswordValid);
-
         if (!isPasswordValid) {
-            console.log('Invalid password for user:', email);
-            return res.status(400).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid email or password' });
         }
 
         // Create session
         req.session.userId = user.id;
         req.session.userEmail = user.email;
-        req.session.save(err => {
-            if (err) {
-                console.error('Session save error:', err);
-                return res.status(500).json({ message: 'Session error' });
+        
+        res.json({ 
+            message: 'Login successful',
+            user: {
+                id: user.id,
+                email: user.email,
+                name: user.name
             }
-
-            console.log('Logged in user ID:', user.id);
-            res.status(200).json({
-                message: 'Login successful',
-                user: {
-                    id: user.id,
-                    email: user.email,
-                    username: user.username
-                }
-            });
         });
     } catch (err) {
-        console.error('Error during login:', err);
-        res.status(500).json({ message: 'Something went wrong' });
+        console.error('Login error:', err);
+        res.status(500).json({ message: 'Server error' });
     }
+});
+
+// Logout endpoint
+app.post('/api/logout', (req, res) => {
+    req.session.destroy(err => {
+        if (err) {
+            console.error('Logout error:', err);
+            return res.status(500).json({ message: 'Logout failed' });
+        }
+        res.clearCookie('connect.sid');
+        res.json({ message: 'Logout successful' });
+    });
+});
+
+// Auth check endpoint
+app.get('/api/check-auth', (req, res) => {
+    res.json({ 
+        authenticated: !!req.session.userId,
+        user: req.session.userId ? { 
+            id: req.session.userId,
+            email: req.session.userEmail 
+        } : null
+    });
 });
 
 
